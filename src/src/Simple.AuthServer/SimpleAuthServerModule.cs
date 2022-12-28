@@ -142,6 +142,7 @@ public class SimpleAuthServerModule : AbpModule
         context.Services.AddOpenIddict()
             .AddServer(options =>
             {
+                // 取消授权时强制的https
                 options.UseAspNetCore().DisableTransportSecurityRequirement();
             });
 
