@@ -1,36 +1,32 @@
-import {
-    SettingOutlined,
-    HomeOutlined,
-    UserOutlined
-} from '@ant-design/icons';
+import { ChromeFilled, HomeFilled, SettingFilled, UserOutlined } from '@ant-design/icons';
 
-const routes = {
-    routes: [
+export default {
+    route: {
+      path: '/',
+      routes: [
         {
-            path: '/',
-            flatMenu: true,
-            component: '@/layouts/index',
-            routes: [
-                {
-                    name: '首页',
-                    path: '/',
-                    component: '@/pages/admin/home/index',
-                    icon: <HomeOutlined />,
-                },
-                {
-                    name: '用户管理',
-                    path: '/user',
-                    icon: <UserOutlined />,
-                    component: '@/pages/admin/user/index',
-                },
-                {
-                    name: '系统设置',
-                    path: '/setting',
-                    icon: <SettingOutlined />,
-                    component: '@/pages/admin/setting/index',
-                },
-            ],
+          path: '/',
+          name: '首页',
+          icon: <HomeFilled />,
+          component: '@/pages/admin/home/index',
         },
+        {
+          path: '/user',
+          name: '用户管理',
+          icon: <UserOutlined />,
+          component: '@/pages/admin/user/index',
+        },
+        {
+            path: '/setting',
+            name: '系统设置',
+            icon: <SettingFilled />,
+            component: '@/pages/admin/setting/index',
+        },
+      ],
+    },
+    location: {
+      pathname: '/',
+    },
+    appList: [
     ],
-};
-export default routes;
+  };

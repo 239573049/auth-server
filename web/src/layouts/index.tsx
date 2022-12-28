@@ -1,11 +1,9 @@
-import { ProLayout } from '@ant-design/pro-components';
 import { Component, ReactNode } from 'react';
-import { Avatar, Popover } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { Link } from 'umi';
-import styles from './index.less';
+import { GithubFilled, InfoCircleFilled, QuestionCircleFilled } from '@ant-design/icons';
+import type { ProSettings } from '@ant-design/pro-components';
+import { PageContainer, ProLayout, SettingDrawer, ProCard } from '@ant-design/pro-components';
 import menu from './menu'
-
+import {history} from 'umi'
 export default class App extends Component {
     state = {
         pathname: '',
@@ -20,68 +18,79 @@ export default class App extends Component {
         var { pathname } = this.state;
         return (
             <div
-                style={{
-                    height: '100vh',
-                }}
+              id="test-pro-layout"
+              style={{
+                height: '100vh',
+              }}
             >
-                <ProLayout
-                    route={menu}
-                    location={{
-                        pathname,
+              <ProLayout
+                siderWidth={216}
+                bgLayoutImgList={[
+                  {
+                    src: 'https://img.alicdn.com/imgextra/i2/O1CN01O4etvp1DvpFLKfuWq_!!6000000000279-2-tps-609-606.png',
+                    left: 85,
+                    bottom: 100,
+                    height: '303px',
+                  },
+                  {
+                    src: 'https://img.alicdn.com/imgextra/i2/O1CN01O4etvp1DvpFLKfuWq_!!6000000000279-2-tps-609-606.png',
+                    bottom: -68,
+                    right: -45,
+                    height: '303px',
+                  },
+                  {
+                    src: 'https://img.alicdn.com/imgextra/i3/O1CN018NxReL1shX85Yz6Cx_!!6000000005798-2-tps-884-496.png',
+                    bottom: 0,
+                    left: 0,
+                    width: '331px',
+                  },
+                ]}
+                {...menu}
+                location={{
+                  pathname,
+                }}
+                title="授权中心"
+                logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
+                avatarProps={{
+                  src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+                  title: 'token',
+                  size: 'small',
+                }}
+                actionsRender={(props) => {
+                  if (props.isMobile) return [];
+                  return [
+                    <InfoCircleFilled key="InfoCircleFilled" />,
+                    <QuestionCircleFilled key="QuestionCircleFilled" />,
+                    <GithubFilled key="GithubFilled" href='https://github.com/239573049'/>,
+                  ];
+                }}
+                menuItemRender={(item, dom) => 
+                    (                    
+                  <div
+                    onClick={() => {
+                        console.log(this.props)
+                        pathname = item.path || '/';
+                        history.push(pathname)
+                        this.setState({
+                            pathname,
+                        });
                     }}
-                    navTheme="light"
-                    fixSiderbar
-                    onMenuHeaderClick={(e) => console.log(e)}
-                    title="统一授权中心"
-                    logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
-                    menuHeaderRender={(logo, title) => (
-                        <div
-                            id="customize_menu_header"
-                            onClick={() => {
-                                window.open('http://docs.tokengo.top/');
-                            }}
-                        >
-                            {logo}
-                            {title}
-                        </div>
-                    )}
-                    menuItemRender={(item, dom: any) => (
-                        <a
-                            onClick={() => {
-                                pathname = item.path || '/';
-
-                                this.setState({
-                                    pathname,
-                                });
-                            }}
-                        >
-                            <Link to={item.path ?? '/'}>{dom}</Link>
-                        </a>
-                    )}
-                    headerRender={() => (
-                        <div className={styles.header}>
-                            <Popover
-                                placement="bottomRight"
-                                content={() => (
-                                    <div style={{ width: '100%' }}>
-                                        <div className={styles.popover}>个人资料</div>
-                                        <div className={styles.popover}>退出登录</div>
-                                    </div>
-                                )}
-                                trigger="click"
-                            >
-                                <Avatar
-                                    shape="square"
-                                    size="large"
-                                    src=""
-                                    icon={<UserOutlined />}
-                                />
-                            </Popover>
-                        </div>
-                    )}
-                >
+                  >
+                    {dom}
+                  </div>
+                )}
+              >
+                <PageContainer>
+                  <ProCard
+                    style={{
+                      height: '100vh',
+                      minHeight: 800,
+                    }}
+                  >
                     {this.props.children}
-                </ProLayout>
+                  </ProCard>
+                </PageContainer>
+              </ProLayout>
             </div>
         );
     }

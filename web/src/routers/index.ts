@@ -16,6 +16,12 @@ export const routes: any[] = [
                 icon: 'HomeOutlined',
             },
             {
+                name: '用户管理',
+                path: '/user',
+                component: '@/pages/admin/user/index',
+                icon: 'HomeOutlined',
+            },
+            {
                 name: '系统设置',
                 path: '/setting',
                 icon: 'UserOutlined',

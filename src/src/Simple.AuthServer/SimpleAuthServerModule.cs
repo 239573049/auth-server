@@ -1,23 +1,22 @@
-using System;
-using System.IO;
-using System.Linq;
 using Localization.Resources.AbpUi;
 using Medallion.Threading;
 using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NSwag.Generation.Processors.Security;
+using NSwag;
+using Simple.Application;
 using Simple.EntityFrameworkCore;
 using Simple.Localization;
 using Simple.MultiTenancy;
 using StackExchange.Redis;
+using System.IO;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
-using Volo.Abp.AspNetCore.Mvc.UI;
-using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap;
+using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
@@ -32,7 +31,6 @@ using Volo.Abp.DistributedLocking;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation.Urls;
-using Volo.Abp.UI;
 using Volo.Abp.VirtualFileSystem;
 
 namespace Simple;
@@ -46,6 +44,7 @@ namespace Simple;
     typeof(AbpAccountHttpApiModule),
     typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(SimpleEntityFrameworkCoreModule),
+    typeof(SimpleApplicationModule),
     typeof(AbpAspNetCoreSerilogModule)
     )]
 public class SimpleAuthServerModule : AbpModule
@@ -89,6 +88,13 @@ public class SimpleAuthServerModule : AbpModule
                     bundle.AddFiles("/global-styles.css");
                 }
             );
+        });
+
+        Configure<AbpAspNetCoreMvcOptions>(options =>
+        {
+            options
+                .ConventionalControllers
+                .Create(typeof(SimpleApplicationModule).Assembly);
         });
 
         Configure<AbpAuditingOptions>(options =>
@@ -154,6 +160,32 @@ public class SimpleAuthServerModule : AbpModule
                     .AllowCredentials();
             });
         });
+        ConfigureSwaggerServices(context);
+    }
+
+    private static void ConfigureSwaggerServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddSwaggerDocument(options =>
+        {
+            options.UseControllerSummaryAsTagDescription = true;
+            options.PostProcess = document =>
+            {
+                document.Info.Version = "v1.0.1";
+                document.Info.Title = "Iot 管理平台";
+                document.Info.Description = "Iot 管理平台 api";
+            };
+            options.AddSecurity("Bearer",
+                new OpenApiSecurityScheme
+                {
+                    Type = OpenApiSecuritySchemeType.ApiKey,
+                    Name = "Bearer",
+                    Description = "token"
+                });
+
+            options.UseXmlDocumentation = true;
+
+            options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+        });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -184,6 +216,9 @@ public class SimpleAuthServerModule : AbpModule
         {
             app.UseMultiTenancy();
         }
+
+        app.UseOpenApi();
+        app.UseSwaggerUi3();
 
         app.UseUnitOfWork();
         app.UseAuthorization();
