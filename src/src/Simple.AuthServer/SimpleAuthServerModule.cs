@@ -150,17 +150,7 @@ public class SimpleAuthServerModule : AbpModule
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder
-                    .WithOrigins(
-                        configuration["App:CorsOrigins"]
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                            .Select(o => o.RemovePostFix("/"))
-                            .ToArray()
-                    )
-                    .WithAbpExposedHeaders()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
+                builder.SetIsOriginAllowed((string _) => true).AllowAnyMethod().AllowAnyHeader()
                     .AllowCredentials();
             });
         });
