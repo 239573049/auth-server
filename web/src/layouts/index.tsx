@@ -33,12 +33,12 @@ export default class App extends Component {
                     fixSiderbar
                     onMenuHeaderClick={(e) => console.log(e)}
                     title="统一授权中心"
-                    logo="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
+                    logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
                     menuHeaderRender={(logo, title) => (
                         <div
                             id="customize_menu_header"
                             onClick={() => {
-                                window.open('https://cn.bing.com/');
+                                window.open('http://docs.tokengo.top/');
                             }}
                         >
                             {logo}

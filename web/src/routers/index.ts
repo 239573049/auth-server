@@ -12,14 +12,14 @@ export const routes: any[] = [
             {
                 name: '首页',
                 path: '/admin',
-                component: '@/pages/home/index',
+                component: '@/pages/admin/home/index',
                 icon: 'HomeOutlined',
             },
             {
                 name: '系统设置',
                 path: '/setting',
                 icon: 'UserOutlined',
-                component: '@/pages/setting/index',
+                component: '@/pages/admin/setting/index',
             },
         ],
     },

@@ -29,7 +29,9 @@ export default () => {
     function onSubmit(value: any) {
         authserverApi.token(value.accountNumber, value.password)
             .then(res => {
-                console.log(res);
+                setToken(res.access_token)
+                message.success("登录成功！")
+                history.push("/")
             })
     }
 
@@ -40,7 +42,7 @@ export default () => {
     return (
         <div style={{ backgroundColor: 'white', }} className="plan">
             <LoginForm
-                logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+                logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
                 title="Iot管理系统"
                 subTitle="更好的Iot管理系统"
                 onFinish={async (value: any) => {

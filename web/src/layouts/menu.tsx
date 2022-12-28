@@ -1,6 +1,7 @@
 import {
     SettingOutlined,
     HomeOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 
 const routes = {
@@ -13,14 +14,20 @@ const routes = {
                 {
                     name: '首页',
                     path: '/',
-                    component: '@/pages/home/index',
+                    component: '@/pages/admin/home/index',
                     icon: <HomeOutlined />,
+                },
+                {
+                    name: '用户管理',
+                    path: '/user',
+                    icon: <UserOutlined />,
+                    component: '@/pages/admin/user/index',
                 },
                 {
                     name: '系统设置',
                     path: '/setting',
                     icon: <SettingOutlined />,
-                    component: '@/pages/setting/index',
+                    component: '@/pages/admin/setting/index',
                 },
             ],
         },
