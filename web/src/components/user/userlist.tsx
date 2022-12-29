@@ -1,12 +1,10 @@
 import { Component, ReactNode } from "react";
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-components';
-import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Table } from 'antd';
+import { Table, Avatar, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import UserApi from "@/apis/userApi";
 import { GetListInput, UserInfoDto } from "@/module/Users";
 import { PagedResultDto } from "@/module/PagedResultDto";
+import request from "@/utils/request";
 
 const columns: ColumnsType<UserInfoDto> = [
   {
@@ -21,7 +19,6 @@ const columns: ColumnsType<UserInfoDto> = [
     width: 100,
     dataIndex: 'name',
     key: 'name',
-    fixed: 'left',
   },
   {
     title: 'Email',
@@ -39,10 +36,9 @@ const columns: ColumnsType<UserInfoDto> = [
     title: '头像',
     dataIndex: 'avatar',
     key: 'avatar',
-    render: (value) => {
-      console.log('avatar', value);
-
-      return value
+    render: (value, recod) => {
+      console.log('value', value, 'recod', recod);
+      return <Avatar shape="square" size={64} src={value} />
     },
     width: 150,
   },
@@ -50,10 +46,17 @@ const columns: ColumnsType<UserInfoDto> = [
     title: '是否活跃',
     dataIndex: 'isActive',
     key: 'isActive',
+    render: (value: boolean) => {
+      return value ? <Tag color="success">活跃</Tag> : <Tag color="warning">非活跃</Tag>
+    },
     width: 150,
   }
 ];
 
+request.get('/api/app/user-info/profile')
+  .then(res => {
+
+  })
 interface IProps {
 
 }
@@ -67,8 +70,7 @@ class UserList extends Component<IProps, IState> {
   state: Readonly<IState> = {
     input: undefined,
     data: {
-      items: [
-        { userName: "admin", name: "admin", surname: null, email: "admin@abp.io", phoneNumber: null, isActive: true, twoFactorEnabled: false, avatar: null, id: "a2017009-8282-02c7-0b34-3a086dd0812e" }]
+      items: []
       ,
       totalCount: 0
     }
@@ -87,9 +89,9 @@ class UserList extends Component<IProps, IState> {
       .then((res: PagedResultDto<UserInfoDto>) => {
         console.log('result', res);
 
-        // this.setState({
-        //   data: res
-        // })
+        this.setState({
+          data: res
+        })
       })
   }
 

@@ -13,6 +13,11 @@ class UserApi {
             params: input
         })
     }
+
+    /**获取用户信息 */
+    getProfile() {
+        return request.get(prefix + '/profile')
+    }
 }
 
 export default new UserApi

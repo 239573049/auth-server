@@ -9,6 +9,7 @@ class AuthServerApi {
                 client_id: "Simple_App",
                 client_secret: null,
                 username: username,
+                scope: 'Simple',
                 password: password
             }
         })

@@ -167,7 +167,7 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
             postLogoutRedirectUri: $"{blazorServerTieredRootUrl}signout-callback-oidc"
         );
         
-        var swaggerRootUrl = "https://localhost:44369".TrimEnd('/');
+        var swaggerRootUrl = "https://localhost:44322".TrimEnd('/');
 
         await CreateApplicationAsync(
             name: "Simple_Swagger",

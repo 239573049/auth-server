@@ -1,6 +1,7 @@
 import { extend } from 'umi-request';
 import { message } from 'antd';
-const baseUrl = 'http://auth.tokengo.top';
+// const baseUrl = 'http://auth.tokengo.top';
+const baseUrl = 'https://localhost:44322';
 
 const codeMessage = {
     204: '删除数据成功。',

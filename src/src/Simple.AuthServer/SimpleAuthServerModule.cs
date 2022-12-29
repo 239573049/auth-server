@@ -1,18 +1,21 @@
+using System;
 using Localization.Resources.AbpUi;
 using Medallion.Threading;
 using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NSwag.Generation.Processors.Security;
-using NSwag;
+using Microsoft.OpenApi.Models;
 using Simple.Application;
 using Simple.EntityFrameworkCore;
 using Simple.Localization;
 using Simple.MultiTenancy;
 using StackExchange.Redis;
+using System.Collections.Generic;
 using System.IO;
+using NUglify.Helpers;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -30,6 +33,7 @@ using Volo.Abp.Caching.StackExchangeRedis;
 using Volo.Abp.DistributedLocking;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
+using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
 
@@ -45,7 +49,8 @@ namespace Simple;
     typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(SimpleEntityFrameworkCoreModule),
     typeof(SimpleApplicationModule),
-    typeof(AbpAspNetCoreSerilogModule)
+    typeof(AbpAspNetCoreSerilogModule),
+    typeof(AbpSwashbuckleModule)
     )]
 public class SimpleAuthServerModule : AbpModule
 {
@@ -94,7 +99,10 @@ public class SimpleAuthServerModule : AbpModule
         {
             options
                 .ConventionalControllers
-                .Create(typeof(SimpleApplicationModule).Assembly);
+                .Create(typeof(SimpleApplicationModule).Assembly, options =>
+                {
+                    
+                });
         });
 
         Configure<AbpAuditingOptions>(options =>
@@ -160,32 +168,23 @@ public class SimpleAuthServerModule : AbpModule
                     .AllowCredentials();
             });
         });
-        ConfigureSwaggerServices(context);
+        ConfigureSwaggerServices(context,configuration);
     }
 
-    private static void ConfigureSwaggerServices(ServiceConfigurationContext context)
+    private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
-        context.Services.AddSwaggerDocument(options =>
-        {
-            options.UseControllerSummaryAsTagDescription = true;
-            options.PostProcess = document =>
+        context.Services.AddAbpSwaggerGenWithOAuth(
+            configuration["AuthServer:Authority"],
+            new Dictionary<string, string>
             {
-                document.Info.Version = "v1.0.1";
-                document.Info.Title = "授权中心";
-                document.Info.Description = "授权中心 api";
-            };
-            options.AddSecurity("Bearer",
-                new OpenApiSecurityScheme
-                {
-                    Type = OpenApiSecuritySchemeType.ApiKey,
-                    Name = "Bearer",
-                    Description = "token"
-                });
-
-            options.UseXmlDocumentation = true;
-
-            options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
-        });
+                {"BookStore", "BookStore API"}
+            },
+            options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BookStore API", Version = "v1" });
+                options.DocInclusionPredicate((docName, description) => true);
+                options.CustomSchemaIds(type => type.FullName);
+            });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -217,11 +216,20 @@ public class SimpleAuthServerModule : AbpModule
             app.UseMultiTenancy();
         }
 
-        app.UseOpenApi();
-        app.UseSwaggerUi3();
 
         app.UseUnitOfWork();
         app.UseAuthorization();
+
+        app.UseSwagger();
+        app.UseAbpSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "BookStore API");
+
+            var configuration = context.GetConfiguration();
+            options.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
+            options.OAuthScopes("Simple");
+        });
+
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
