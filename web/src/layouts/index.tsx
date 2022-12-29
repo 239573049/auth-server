@@ -100,7 +100,6 @@ export default class App extends Component<IProps, IState>{
           (
             <div
               onClick={() => {
-                console.log(this.props)
                 pathname = item.path || '/';
                 history.push(pathname)
                 this.setState({
@@ -115,8 +114,7 @@ export default class App extends Component<IProps, IState>{
           <PageContainer>
             <ProCard
               style={{
-                height: '100vh',
-                minHeight: 800,
+                height: '90vh',
               }}
             >
               {this.props.children}

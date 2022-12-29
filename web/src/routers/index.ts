@@ -13,18 +13,20 @@ export const routes: any[] = [
                 name: '首页',
                 path: '/admin',
                 component: '@/pages/admin/home/index',
-                icon: 'HomeOutlined',
             },
             {
                 name: '用户管理',
                 path: '/user',
                 component: '@/pages/admin/user/index',
-                icon: 'HomeOutlined',
+            },
+            {
+                name: '客户端管理',
+                path: '/client',
+                component: '@/pages/admin/client/index',
             },
             {
                 name: '系统设置',
                 path: '/setting',
-                icon: 'UserOutlined',
                 component: '@/pages/admin/setting/index',
             },
         ],

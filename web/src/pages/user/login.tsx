@@ -43,8 +43,8 @@ export default () => {
         <div style={{ backgroundColor: 'white', }} className="plan">
             <LoginForm
                 logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
-                title="Iot管理系统"
-                subTitle="更好的Iot管理系统"
+                title="授权中心管理平台"
+                subTitle="简单好用的授权中心管理平台"
                 onFinish={async (value: any) => {
                     onSubmit(value);
                 }}

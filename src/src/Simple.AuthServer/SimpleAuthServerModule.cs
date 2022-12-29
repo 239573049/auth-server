@@ -1,21 +1,22 @@
-using System;
 using Localization.Resources.AbpUi;
 using Medallion.Threading;
 using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Simple.Application;
 using Simple.EntityFrameworkCore;
+using Simple.Filters;
 using Simple.Localization;
 using Simple.MultiTenancy;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.IO;
-using NUglify.Helpers;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -36,9 +37,6 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
-using Autofac.Core;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace Simple;
 
@@ -171,13 +169,18 @@ public class SimpleAuthServerModule : AbpModule
                     .AllowCredentials();
             });
         });
+
         ConfigureSwaggerServices(context,configuration);
 
         ConfigureServices(context.Services);
     }
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddMvc().AddRazorPagesOptions(o =>
+        services.AddMvc(options =>
+            {
+                options.Filters.Add<ExceptionFilter>();
+            })
+            .AddRazorPagesOptions(o =>
         {
             o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
 

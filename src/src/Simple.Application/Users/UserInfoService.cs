@@ -13,6 +13,7 @@ using Volo.Abp.Identity;
 namespace Simple.Application.Users;
 
 /// <inheritdoc />
+[Authorize]
 public class UserInfoService : ApplicationService, IUserInfoService
 {
     private readonly IUserInfoRepository _userInfoRepository;

@@ -435,4 +435,8 @@
     <None Include="wwwroot\libs\toastr\toastr.min.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
+
 </Project>

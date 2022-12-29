@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Simple.Domain.Shared\Simple.Domain.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="OpenIddict\Dto\" />
     <Folder Include="Users\Dto\" />
     <Folder Include="Base\" />
   </ItemGroup>
