@@ -1,195 +1,104 @@
 import { Component, ReactNode } from "react";
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button, Dropdown, Space, Tag } from 'antd';
-import request from "@/utils/request";
+import { Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import UserApi from "@/apis/userApi";
+import { GetListInput, UserInfoDto } from "@/module/Users";
+import { PagedResultDto } from "@/module/PagedResultDto";
 
-type GithubIssueItem = {
-  url: string;
-  id: number;
-  number: number;
-  title: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  state: string;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
-};
+const columns: ColumnsType<UserInfoDto> = [
+  {
+    title: '用户名',
+    width: 100,
+    dataIndex: 'userName',
+    key: 'userName',
+    fixed: 'left',
+  },
+  {
+    title: '昵称',
+    width: 100,
+    dataIndex: 'name',
+    key: 'name',
+    fixed: 'left',
+  },
+  {
+    title: 'Email',
+    dataIndex: 'email',
+    key: 'email',
+    width: 150,
+  },
+  {
+    title: '手机号',
+    dataIndex: 'phoneNumber',
+    key: 'phoneNumber',
+    width: 150,
+  },
+  {
+    title: '头像',
+    dataIndex: 'avatar',
+    key: 'avatar',
+    render: (value) => {
+      console.log('avatar', value);
 
-const columns: ProColumns<GithubIssueItem>[] = [
-  {
-    dataIndex: 'index',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: '标题',
-    dataIndex: 'title',
-    copyable: true,
-    ellipsis: true,
-    tip: '标题过长会自动收缩',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
+      return value
     },
+    width: 150,
   },
   {
-    disable: true,
-    title: '状态',
-    dataIndex: 'state',
-    filters: true,
-    onFilter: true,
-    ellipsis: true,
-    valueType: 'select',
-    valueEnum: {
-      all: { text: '超长'.repeat(50) },
-      open: {
-        text: '未解决',
-        status: 'Error',
-      },
-      closed: {
-        text: '已解决',
-        status: 'Success',
-        disabled: true,
-      },
-      processing: {
-        text: '解决中',
-        status: 'Processing',
-      },
-    },
-  },
-  {
-    disable: true,
-    title: '标签',
-    dataIndex: 'labels',
-    search: false,
-    renderFormItem: (_, { defaultRender }) => {
-      return defaultRender(_);
-    },
-    render: (_, record) => (
-      <Space>
-        {record.labels.map(({ name, color }) => (
-          <Tag color={color} key={name}>
-            {name}
-          </Tag>
-        ))}
-      </Space>
-    ),
-  },
-  {
-    title: '创建时间',
-    key: 'showTime',
-    dataIndex: 'created_at',
-    valueType: 'date',
-    sorter: true,
-    hideInSearch: true,
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    valueType: 'dateRange',
-    hideInTable: true,
-    search: {
-      transform: (value) => {
-        return {
-          startTime: value[0],
-          endTime: value[1],
-        };
-      },
-    },
-  },
-  {
-    title: '操作',
-    valueType: 'option',
-    key: 'option',
-    render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.id);
-        }}
-      >
-        编辑
-      </a>,
-      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-        查看
-      </a>,
-      <TableDropdown
-        key="actionGroup"
-        onSelect={() => action?.reload()}
-        menus={[
-          { key: 'copy', name: '复制' },
-          { key: 'delete', name: '删除' },
-        ]}
-      />,
-    ],
-  },
+    title: '是否活跃',
+    dataIndex: 'isActive',
+    key: 'isActive',
+    width: 150,
+  }
 ];
 
- class UserList extends Component{
-    render() {
-        return(  
-        <ProTable<GithubIssueItem>
-            columns={columns}
-            cardBordered
-            request={async (params = {}, sort, filter) => {
-              console.log(sort, filter);
-              return request<{
-                data: GithubIssueItem[];
-              }>('https://proapi.azurewebsites.net/github/issues', {
-                params,
-              });
-            }}
-            editable={{
-              type: 'multiple',
-            }}
-            columnsState={{
-              persistenceKey: 'pro-table-singe-demos',
-              persistenceType: 'localStorage',
-              onChange(value) {
-                console.log('value: ', value);
-              },
-            }}
-            rowKey="id"
-            search={{
-              labelWidth: 'auto',
-            }}
-            options={{
-              setting: {
-                listsHeight: 400,
-              },
-            }}
-            form={{
-              // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-              syncToUrl: (values, type) => {
-                if (type === 'get') {
-                  return {
-                    ...values,
-                    created_at: [values.startTime, values.endTime],
-                  };
-                }
-                return values;
-              },
-            }}
-            pagination={{
-              pageSize: 5,
-              onChange: (page) => console.log(page),
-            }}
-            dateFormatter="string"
-            headerTitle="用户列表"
-            toolBarRender={() => [
-            ]}
-          />)
+interface IProps {
+
+}
+
+interface IState {
+  input: GetListInput | undefined,
+  data: PagedResultDto<UserInfoDto>
+}
+
+class UserList extends Component<IProps, IState> {
+  state: Readonly<IState> = {
+    input: undefined,
+    data: {
+      items: [
+        { userName: "admin", name: "admin", surname: null, email: "admin@abp.io", phoneNumber: null, isActive: true, twoFactorEnabled: false, avatar: null, id: "a2017009-8282-02c7-0b34-3a086dd0812e" }]
+      ,
+      totalCount: 0
     }
+  }
+
+  constructor(props: IProps) {
+    super(props)
+    this.getUserList()
+  }
+
+  /**
+   * 获取用户表格
+   */
+  getUserList() {
+    UserApi.getList(this.state.input)
+      .then((res: PagedResultDto<UserInfoDto>) => {
+        console.log('result', res);
+
+        // this.setState({
+        //   data: res
+        // })
+      })
+  }
+
+  render() {
+    var { data } = this.state
+    return (<div>
+      <Table columns={columns} dataSource={data.items} scroll={{ x: 1500, y: 300 }} />
+    </div>)
+  }
 }
 
 export default UserList

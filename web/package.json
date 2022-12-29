@@ -3,6 +3,7 @@
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
+    "gen:api": "openapi-generator-cli generate -i ../docs/swagger.yaml -g typescript-axios -c .openapi_config.yaml -o src/apiClient/api",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",

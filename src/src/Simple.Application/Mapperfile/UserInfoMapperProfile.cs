@@ -9,6 +9,8 @@ public class UserInfoMapperProfile : Profile
 {
     public UserInfoMapperProfile()
     {
-        CreateMap<IdentityUser, UserInfoDto>();
+        CreateMap<IdentityUser, UserInfoDto>()
+            .ForPath(x=>x.Avatar,x=>x.MapFrom(opt=>opt.ExtraProperties.GetOrDefault("Avatar")));
+
     }
 }
