@@ -6,7 +6,7 @@ class AuthServerApi {
             requestType: 'form',
             data: {
                 grant_type: "password",
-                client_id: "Blogger_App",
+                client_id: "Simple_App",
                 client_secret: null,
                 username: username,
                 password: password

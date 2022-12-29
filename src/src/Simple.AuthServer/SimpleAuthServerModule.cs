@@ -171,8 +171,8 @@ public class SimpleAuthServerModule : AbpModule
             options.PostProcess = document =>
             {
                 document.Info.Version = "v1.0.1";
-                document.Info.Title = "Iot 管理平台";
-                document.Info.Description = "Iot 管理平台 api";
+                document.Info.Title = "授权中心";
+                document.Info.Description = "授权中心 api";
             };
             options.AddSecurity("Bearer",
                 new OpenApiSecurityScheme
