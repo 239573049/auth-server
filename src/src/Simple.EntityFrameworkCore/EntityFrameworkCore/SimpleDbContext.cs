@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Simple.Users;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -17,7 +15,6 @@ using Volo.Abp.TenantManagement.EntityFrameworkCore;
 
 namespace Simple.EntityFrameworkCore;
 
-[ReplaceDbContext(typeof(IIdentityDbContext))]
 [ReplaceDbContext(typeof(ITenantManagementDbContext))]
 [ConnectionStringName("Default")]
 public class SimpleDbContext :
@@ -32,8 +29,9 @@ public class SimpleDbContext :
 
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
-    
+
     public DbSet<IdentityRole> Roles { get; set; }
+
     public DbSet<IdentityClaimType> ClaimTypes { get; set; }
     public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
     public DbSet<IdentitySecurityLog> SecurityLogs { get; set; }

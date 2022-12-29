@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple.AuthServer", "src\Si
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple.Application", "src\Simple.Application\Simple.Application.csproj", "{E4D45818-017C-48DD-A382-CE2CD657DAC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Application.Contract", "src\Simple.Application.Contract\Simple.Application.Contract.csproj", "{B2EF501A-FAE4-4173-A674-F8016BA906C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple.Application.Contract", "src\Simple.Application.Contract\Simple.Application.Contract.csproj", "{B2EF501A-FAE4-4173-A674-F8016BA906C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.DbMigrator", "src\Simple.DbMigrator\Simple.DbMigrator.csproj", "{31ED558F-EB89-4A5D-9442-F53EAC015F93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple.DbMigrator", "src\Simple.DbMigrator\Simple.DbMigrator.csproj", "{31ED558F-EB89-4A5D-9442-F53EAC015F93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

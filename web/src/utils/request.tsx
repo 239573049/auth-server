@@ -31,7 +31,7 @@ const request = extend({
     prefix: baseUrl,
     // 默认请求头
     headers: {
-        "Authorization": `Bearer ${getToken()}` // 携带token
+        "Authorization": `Bearer ${getToken()}`, // 携带token
     },
     credentials: 'include', // 默认请求是否带上cookie
 });

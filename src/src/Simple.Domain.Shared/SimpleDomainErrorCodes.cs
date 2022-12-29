@@ -2,5 +2,10 @@
 
 public static class SimpleDomainErrorCodes
 {
-    /* You can add your business exception error codes here, as constants */
+    private const string Default = "Simple:";
+
+    /// <summary>
+    /// 账号或手机号重复
+    /// </summary>
+    public const string AccountDuplication = Default + "AccountDuplication";
 }

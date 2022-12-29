@@ -13,5 +13,6 @@ export interface UserInfoDto extends EntityDto<string> {
 }
 
 export interface GetListInput extends PagedRequestDto {
-    keywords: string | null;
+    keywords: string;
+    loading: boolean
 }

@@ -35,7 +35,8 @@ public class UserInfoRepository : EfCoreRepository<SimpleDbContext, IdentityUser
     {
         var dbContext = await GetDbContextAsync();
 
-        var query = dbContext.Users.WhereIf(!keywords.IsNullOrEmpty(), x => x.UserName.Contains(keywords) || x.Name.Contains(keywords) || x.Email.Contains(keywords));
+        var query = dbContext.Users
+            .WhereIf(!keywords.IsNullOrEmpty(), x => x.UserName.Contains(keywords) || x.Name.Contains(keywords) || x.Email.Contains(keywords));
 
         return query;
     }

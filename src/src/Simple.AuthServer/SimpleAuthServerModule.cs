@@ -36,6 +36,9 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Autofac.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace Simple;
 
@@ -169,8 +172,17 @@ public class SimpleAuthServerModule : AbpModule
             });
         });
         ConfigureSwaggerServices(context,configuration);
-    }
 
+        ConfigureServices(context.Services);
+    }
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddMvc().AddRazorPagesOptions(o =>
+        {
+            o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+
+        }).InitializeTagHelper<FormTagHelper>((helper, context) => helper.Antiforgery = false);
+    }
     private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddAbpSwaggerGenWithOAuth(

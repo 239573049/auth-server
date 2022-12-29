@@ -20,4 +20,18 @@ public interface IUserInfoService
     /// </summary>
     /// <returns></returns>
     Task<UserInfoDto> GetProfileAsync();
+
+    /// <summary>
+    /// 删除用户
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
+    Task DeleteAsync(List<Guid> ids);
+
+    /// <summary>
+    /// 创建用户
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    Task CreateAsync(CreateUserInput dto);
 }
