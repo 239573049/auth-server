@@ -11,12 +11,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Simple.Application;
 using Simple.EntityFrameworkCore;
-using Simple.Filters;
 using Simple.Localization;
 using Simple.MultiTenancy;
 using StackExchange.Redis;
 using System.Collections.Generic;
-using System.IO;
+using OpenIddict.Server;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -36,7 +35,6 @@ using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
-using Volo.Abp.VirtualFileSystem;
 
 namespace Simple;
 
@@ -80,7 +78,7 @@ public class SimpleAuthServerModule : AbpModule
                 .AddBaseTypes(
                     typeof(AbpUiResource)
                 );
-                
+
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
             options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
         });
@@ -100,26 +98,14 @@ public class SimpleAuthServerModule : AbpModule
         {
             options
                 .ConventionalControllers
-                .Create(typeof(SimpleApplicationModule).Assembly, options =>
-                {
-                    
-                });
+                .Create(typeof(SimpleApplicationModule).Assembly);
         });
 
         Configure<AbpAuditingOptions>(options =>
         {
-                //options.IsEnabledForGetRequests = true;
-                options.ApplicationName = "AuthServer";
+            //options.IsEnabledForGetRequests = true;
+            options.ApplicationName = "AuthServer";
         });
-
-        if (hostingEnvironment.IsDevelopment())
-        {
-            Configure<AbpVirtualFileSystemOptions>(options =>
-            {
-                options.FileSets.ReplaceEmbeddedByPhysical<SimpleDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}Simple.Domain.Shared"));
-                options.FileSets.ReplaceEmbeddedByPhysical<SimpleDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}Simple.Domain"));
-            });
-        }
 
         Configure<AppUrlOptions>(options =>
         {
@@ -146,7 +132,7 @@ public class SimpleAuthServerModule : AbpModule
             var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
             dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "Simple-Protection-Keys");
         }
-        
+
         context.Services.AddSingleton<IDistributedLockProvider>(sp =>
         {
             var connection = ConnectionMultiplexer
@@ -170,21 +156,28 @@ public class SimpleAuthServerModule : AbpModule
             });
         });
 
-        ConfigureSwaggerServices(context,configuration);
+
+        context.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = "AuthenticationScheme";
+
+        }).AddCookie("AuthenticationScheme", options =>
+        {
+            options.AccessDeniedPath = "/login";
+            options.LoginPath = "/login";
+            options.LogoutPath = "/Account/LogOut";
+        });
+        
+        ConfigureSwaggerServices(context, configuration);
 
         ConfigureServices(context.Services);
     }
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddMvc(options =>
-            {
-                options.Filters.Add<ExceptionFilter>();
-            })
-            .AddRazorPagesOptions(o =>
-        {
-            o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-
-        }).InitializeTagHelper<FormTagHelper>((helper, context) => helper.Antiforgery = false);
+        services.AddMvc()
+            .AddRazorPagesOptions(o =>{
+                o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+            }).InitializeTagHelper<FormTagHelper>((helper, context) => helper.Antiforgery = false);
     }
     private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
@@ -192,11 +185,11 @@ public class SimpleAuthServerModule : AbpModule
             configuration["AuthServer:Authority"],
             new Dictionary<string, string>
             {
-                {"BookStore", "BookStore API"}
+                {"Auth", "Auth API"}
             },
             options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BookStore API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Auth API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
             });
@@ -225,7 +218,7 @@ public class SimpleAuthServerModule : AbpModule
         app.UseCors();
         app.UseAuthentication();
         app.UseAbpOpenIddictValidation();
-       
+
         if (MultiTenancyConsts.IsEnabled)
         {
             app.UseMultiTenancy();
