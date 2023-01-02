@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,15 @@ public class Program
                 else
                 {
                     await next(context);
+#if DEBUG
+                    var location = context.Response.Headers.GetOrDefault("Location").FirstOrDefault();
+                    if (!string.IsNullOrEmpty(location))
+                    {
+                        location=location.Replace("https://localhost:44322", "http://localhost:8000");
+                        context.Response.Headers["Location"] = location;
+                    }
+
+#endif
                 }
             });
             await app.InitializeApplicationAsync();
