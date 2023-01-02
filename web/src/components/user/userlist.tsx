@@ -113,12 +113,14 @@ class UserList extends Component<IProps, IState> {
 
     UserApi.getList(input)
       .then((res: PagedResultDto<UserInfoDto>) => {
-        console.log('result', res);
-        input.loading = false;
-        this.setState({
-          data: res,
-          input
-        })
+        if(res){
+          console.log('result', res);
+          input.loading = false;
+          this.setState({
+            data: res,
+            input
+          })
+        }
       }).catch(error => {
         input.loading = false;
         this.setState({

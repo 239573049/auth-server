@@ -1,4 +1,5 @@
 import authserverApi from '@/apis/authserverApi';
+import { GetQueryValue } from '@/utils/locationhelper';
 import {
     GithubOutlined,
     LockOutlined,
@@ -29,6 +30,10 @@ export default () => {
     function onSubmit(value: any) {
         authserverApi.token(value.accountNumber, value.password)
             .then(res => {
+                var returnUrl = GetQueryValue("ReturnUrl")
+                if(returnUrl){
+                    window.location.href = returnUrl+"?token="+res.access_token;
+                }
                 setToken(res.access_token)
                 message.success("登录成功！")
                 history.push("/")

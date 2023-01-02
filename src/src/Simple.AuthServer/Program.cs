@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +13,17 @@ namespace Simple;
 
 public class Program
 {
+    private static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
+        {
+            {".html", "text/html; charset=utf-8"},
+            {".css", "text/css; charset=utf-8"},
+            {".js", "application/javascript"},
+            {".png", "image/png"},
+            {".svg", "image/svg+xml"},
+            { ".json","application/json;charset=utf-8"},
+            { ".ico","image/x-icon"}
+        };
+
     public async static Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
@@ -35,8 +48,31 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<SimpleAuthServerModule>();
             var app = builder.Build();
+            app.Use(async (context, next) =>
+            {
+                if (File.Exists(Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html")) && !context.Request.Path.ToString().StartsWith("/api") && !context.Request.Path.Value.StartsWith("/connect"))
+                {
+                    var extType = Path.GetExtension(context.Request.Path);
+                    if (_contentTypes.TryGetValue(extType, out string contentType))
+                    {
+                        context.Response.ContentType = contentType;
+                    }
+                    else
+                    {
+                        context.Response.ContentType = "text/html; charset=utf-8";
+                    }
+                    var bytes = await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html"));
+                    await context.Response.BodyWriter.WriteAsync(bytes);
+                }
+                else
+                {
+                    await next(context);
+                }
+            });
             await app.InitializeApplicationAsync();
             await app.RunAsync();
+
+
             return 0;
         }
         catch (Exception ex)
