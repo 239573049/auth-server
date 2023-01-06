@@ -1,11 +1,11 @@
 import { extend } from 'umi-request';
+import { history } from 'umi';
 import { GetQueryValue } from './locationhelper';
+import { message } from 'antd';
 // const baseUrl = 'http://auth.tokengo.top';
 const baseUrl = 'https://localhost:44322';
 
 const errorHandler = (error: any) => {
-    const { response } = error;
-    
 };
 
 function getToken() {
@@ -20,13 +20,6 @@ function getToken() {
     return token;
 }
 
-// 全局相应拦截
-const responseInterceptor = (response:any, options:any) => {
-    console.log('返回了');
-    return response;
-  };
-
-  
 const request = extend({
     errorHandler, // 默认错误处理
     prefix: baseUrl,
@@ -34,12 +27,24 @@ const request = extend({
     headers: {
         "Authorization": `Bearer ${getToken()}`, // 携带token
     },
-    responseInterceptors: [responseInterceptor],
     credentials: 'include', // 默认请求是否带上cookie
 });
 
+request.use(async (context,next)=>{
+    var token = getToken();
+    if(context.req.options.headers&&token){
+        context.req.options.headers["Authorization"] = `Bearer ${token}`;
+    }
+    await next()
+})
+
 request.interceptors.response.use(async(response,option)=>{
-    console.log('重定向',response.status);
+    if(response.status === 401){
+        history.push('/login')
+        return response;
+    }else if(response.status === 403){
+        message.error('403 无操作权限')
+    }
     return response;
 })
 

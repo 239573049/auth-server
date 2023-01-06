@@ -17,7 +17,7 @@ using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using OpenIddict.Server;
+using OpenIddict.Validation.AspNetCore;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -144,19 +144,10 @@ public class SimpleAuthServerModule : AbpModule
         context.Services.AddOpenIddict()
             .AddServer(options =>
             {
-                options.AddEventHandler<OpenIddictServerEvents.HandleConfigurationRequestContext>(builder =>
-                {
-                    builder.UseInlineHandler(context =>
-                    {
-                        // Attach custom metadata to the configuration document.
-                        context.Metadata["custom_metadata"] = 42;
-
-                        return default;
-                    });
-                    
-                });
                 // 取消授权时强制的https
-                options.UseAspNetCore().DisableTransportSecurityRequirement();
+                options.UseAspNetCore()
+                    .DisableTransportSecurityRequirement();
+
             });
 
         context.Services.AddCors(options =>
@@ -178,16 +169,8 @@ public class SimpleAuthServerModule : AbpModule
             options.AccessDeniedPath = "/login";
             options.LoginPath = "/login";
             options.LogoutPath = "/Account/LogOut";
-            options.Events = new CookieAuthenticationEvents()
-            {
-                OnRedirectToReturnUrl = (async redirectContext =>
-                {
-                    
-                    await Task.CompletedTask;
-                })
-            };
         });
-        
+
         ConfigureSwaggerServices(context, configuration);
 
         ConfigureServices(context.Services);
@@ -195,7 +178,8 @@ public class SimpleAuthServerModule : AbpModule
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddMvc()
-            .AddRazorPagesOptions(o =>{
+            .AddRazorPagesOptions(o =>
+            {
                 o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
             }).InitializeTagHelper<FormTagHelper>((helper, context) => helper.Antiforgery = false);
     }
@@ -234,8 +218,8 @@ public class SimpleAuthServerModule : AbpModule
 
         app.UseCorrelationId();
         app.UseStaticFiles();
-        app.UseRouting();
         app.UseCors();
+        app.UseRouting();
         app.UseAuthentication();
         app.UseAbpOpenIddictValidation();
 

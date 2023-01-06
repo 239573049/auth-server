@@ -25,6 +25,7 @@ public class UserInfoService : ApplicationService, IUserInfoService
     }
 
     /// <inheritdoc />
+    [Authorize(Roles = "cs")]
     public async Task<PagedResultDto<UserInfoDto>> GetListAsync(GetListInput input)
     {
         var data = await _userInfoRepository.GetListAsync(input.Keywords, input.SkipCount, input.MaxResultCount);

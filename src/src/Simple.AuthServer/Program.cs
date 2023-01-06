@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +26,7 @@ public class Program
         { ".ico", "image/x-icon" }
     };
 
-    public async static Task<int> Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
@@ -51,42 +52,51 @@ public class Program
             var app = builder.Build();
             app.Use(async (context, next) =>
             {
+                await next(context);
+
+                if (context.Response.StatusCode == 404)
                 {
-                    await next(context);
-
-                    if (context.Response.StatusCode == 404)
+                    if (File.Exists(Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html")) &&
+                        !context.Request.Path.ToString().StartsWith("/api") &&
+                        !context.Request.Path.Value.StartsWith("/connect"))
                     {
-                        if (File.Exists(Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html")) &&
-                            !context.Request.Path.ToString().StartsWith("/api") &&
-                            !context.Request.Path.Value.StartsWith("/connect"))
+                        var extType = Path.GetExtension(context.Request.Path);
+                        if (_contentTypes.TryGetValue(extType, out string contentType))
                         {
-                            var extType = Path.GetExtension(context.Request.Path);
-                            if (_contentTypes.TryGetValue(extType, out string contentType))
-                            {
-                                context.Response.ContentType = contentType;
-                            }
-                            else
-                            {
-                                context.Response.ContentType = "text/html; charset=utf-8";
-                            }
-
-                            var bytes = await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot",
-                                "index.html"));
-                            await context.Response.BodyWriter.WriteAsync(bytes);
+                            context.Response.ContentType = contentType;
                         }
+                        else
+                        {
+                            context.Response.ContentType = "text/html; charset=utf-8";
+                        }
+
+                        var bytes = await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot",
+                            "index.html"));
+                        await context.Response.BodyWriter.WriteAsync(bytes);
+                    }
+                }
+                else if (context.Response.StatusCode == 302)
+                {
+                    if (context.User.Identity?.IsAuthenticated == true)
+                    {
+                        context.Response.StatusCode = 403;
                     }
                     else
                     {
+                        context.Response.StatusCode = 401;
+                    }
+                }
+                else
+                {
 #if DEBUG
-                        var location = context.Response.Headers.GetOrDefault("Location").FirstOrDefault();
-                        if (!string.IsNullOrEmpty(location))
-                        {
-                            location = location.Replace("https://localhost:44322", "http://localhost:8000");
-                            context.Response.Headers["Location"] = location;
-                        }
+                    var location = context.Response.Headers.GetOrDefault("Location").FirstOrDefault();
+                    if (!string.IsNullOrEmpty(location))
+                    {
+                        location = location.Replace("https://localhost:44322", "http://localhost:8000");
+                        context.Response.Headers["Location"] = location;
+                    }
 
 #endif
-                    }
                 }
             });
             await app.InitializeApplicationAsync();
