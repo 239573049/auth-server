@@ -15,6 +15,8 @@ using Simple.Localization;
 using Simple.MultiTenancy;
 using StackExchange.Redis;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using OpenIddict.Server;
 using Volo.Abp;
 using Volo.Abp.Account;
@@ -111,7 +113,6 @@ public class SimpleAuthServerModule : AbpModule
         {
             options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
             options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"].Split(','));
-
             options.Applications["Angular"].RootUrl = configuration["App:ClientUrl"];
             options.Applications["Angular"].Urls[AccountUrlNames.PasswordReset] = "account/reset-password";
         });
@@ -143,6 +144,17 @@ public class SimpleAuthServerModule : AbpModule
         context.Services.AddOpenIddict()
             .AddServer(options =>
             {
+                options.AddEventHandler<OpenIddictServerEvents.HandleConfigurationRequestContext>(builder =>
+                {
+                    builder.UseInlineHandler(context =>
+                    {
+                        // Attach custom metadata to the configuration document.
+                        context.Metadata["custom_metadata"] = 42;
+
+                        return default;
+                    });
+                    
+                });
                 // 取消授权时强制的https
                 options.UseAspNetCore().DisableTransportSecurityRequirement();
             });
@@ -166,6 +178,14 @@ public class SimpleAuthServerModule : AbpModule
             options.AccessDeniedPath = "/login";
             options.LoginPath = "/login";
             options.LogoutPath = "/Account/LogOut";
+            options.Events = new CookieAuthenticationEvents()
+            {
+                OnRedirectToReturnUrl = (async redirectContext =>
+                {
+                    
+                    await Task.CompletedTask;
+                })
+            };
         });
         
         ConfigureSwaggerServices(context, configuration);
