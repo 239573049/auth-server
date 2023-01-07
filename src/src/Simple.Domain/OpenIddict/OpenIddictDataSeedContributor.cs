@@ -62,8 +62,6 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
                 }
             });
         }
-
-        Console.WriteLine("测试");
     }
 
     private async Task CreateApplicationsAsync()

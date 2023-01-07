@@ -1,3 +1,4 @@
+import { GetRoleUserListInput } from "@/module/GetRoleUserListInput";
 import { GetListInput, UserInfoDto } from "@/module/Users";
 import request from "@/utils/request";
 const prefix = "/api/app/user-info";
@@ -40,6 +41,17 @@ class UserApi {
     delete(ids: any[]) {
         return request.delete(prefix, {
             data: ids
+        })
+    }
+
+    /**
+     * 获取角色下所有用户
+     * @param input 
+     * @returns 
+     */
+    roleUserList(input:GetRoleUserListInput){
+        return request.get(prefix+'/role-user-list',{
+            params:input
         })
     }
 }

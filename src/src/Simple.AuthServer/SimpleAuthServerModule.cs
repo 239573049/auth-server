@@ -15,9 +15,6 @@ using Simple.Localization;
 using Simple.MultiTenancy;
 using StackExchange.Redis;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using OpenIddict.Validation.AspNetCore;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -77,6 +74,11 @@ public class SimpleAuthServerModule : AbpModule
         {
             options.Resources
                 .Get<SimpleResource>()
+                .AddBaseTypes(
+                    typeof(AbpUiResource)
+                );
+
+            options.Resources.Get<PermissionsResource>()
                 .AddBaseTypes(
                     typeof(AbpUiResource)
                 );

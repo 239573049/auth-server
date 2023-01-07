@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Permissions\PermissionsService.cs~RF17866d07.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Simple.Application.Contract\Simple.Application.Contract.csproj" />
     <ProjectReference Include="..\Simple.Domain\Simple.Domain.csproj" />
   </ItemGroup>
@@ -23,6 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Role\" />
 	  <Folder Include="Users\" />
 	  <Folder Include="Mapperfile\" />
 	</ItemGroup>

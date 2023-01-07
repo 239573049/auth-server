@@ -13,4 +13,11 @@ public interface IOpenIddictApplicationService
     /// </summary>
     /// <returns></returns>
     Task<PagedResultDto<OpenIddictApplicationDto>> GetListAsync(GetOpenIddictListInput input);
+
+    /// <summary>
+    /// 编辑应用程序
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task UpdateAsync(UpdateOpenIddictApplicationInput input);
 }

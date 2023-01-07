@@ -1,0 +1,9 @@
+{
+  "culture": "zh-Hans",
+  "texts": {
+    "Simple": "授权服务",
+    "Simple.OpenIddictApplication": "应用",
+    "Simple.OpenIddictApplication.List": "获取应用列表",
+    "Simple.OpenIddictApplication.Update": "更新应用"
+  }
+}

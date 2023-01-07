@@ -1,9 +1,10 @@
 {
-    "culture": "zh-Hans",
+  "culture": "zh-Hans",
   "texts": {
     "Menu:Home": "首页",
     "Welcome": "欢迎",
     "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io.",
+    "Simple:DataNotFound": "数据未找到！",
     "Simple:AccountDuplication": "账号或邮箱重复！"
   }
-  }
+}

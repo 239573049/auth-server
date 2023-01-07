@@ -43,9 +43,14 @@ public class SimpleDomainSharedModule : AbpModule
         Configure<AbpLocalizationOptions>(options =>
         {
             options.Resources
-                .Add<SimpleResource>("en")
+                .Add<SimpleResource>("zh-Hans")
                 .AddBaseTypes(typeof(AbpValidationResource))
                 .AddVirtualJson("/Localization/Simple");
+
+            options.Resources
+                .Add<PermissionsResource>("zh-Hans")
+                .AddBaseTypes(typeof(AbpValidationResource))
+                .AddVirtualJson("/Localization/Permissions");
 
             options.DefaultResourceType = typeof(SimpleResource);
         });

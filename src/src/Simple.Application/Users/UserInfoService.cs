@@ -25,6 +25,7 @@ public class UserInfoService : ApplicationService, IUserInfoService
     }
 
     /// <inheritdoc />
+    [Authorize(Roles = "admin")]
     public async Task<PagedResultDto<UserInfoDto>> GetListAsync(GetListInput input)
     {
         var data = await _userInfoRepository.GetListAsync(input.Keywords, input.SkipCount, input.MaxResultCount);
@@ -45,6 +46,7 @@ public class UserInfoService : ApplicationService, IUserInfoService
     }
 
     /// <inheritdoc />
+    [Authorize(Roles = "admin")]
     public async Task DeleteAsync([FromBody] List<Guid> ids)
     {
         // 不能删除自己
@@ -55,6 +57,7 @@ public class UserInfoService : ApplicationService, IUserInfoService
     }
 
     /// <inheritdoc />
+    [Authorize(Roles = "admin")]
     public async Task CreateAsync(CreateUserInput dto)
     {
         if (await _userInfoRepository.AnyAsync(x => x.UserName == dto.UserName || x.Email == dto.Email))
@@ -68,5 +71,20 @@ public class UserInfoService : ApplicationService, IUserInfoService
         data.ExtraProperties.Add("Avatar", dto.Avatar);
 
         await _userInfoRepository.InsertAsync(data, true);
+    }
+
+    /// <inheritdoc />
+    [Authorize(Roles = "admin")]
+    public async Task<PagedResultDto<UserInfoDto>> GetRoleUserListAsync(GetRoleUserListInput input)
+    {
+        var data = await _userInfoRepository.GetRoleUserListAsync(input.Keywords, input.RoleId, input.SkipCount,
+            input.MaxResultCount);
+
+        var count = await _userInfoRepository.GetRoleUserCountAsync(input.Keywords, input.RoleId);
+
+        var dto = ObjectMapper.Map<List<IdentityUser>, List<UserInfoDto>>(data);
+
+        return new PagedResultDto<UserInfoDto>(count, dto);
+
     }
 }

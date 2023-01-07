@@ -1,12 +1,12 @@
 import { Component } from "react";
 import { Table, Avatar, Tag, message, Space, Input, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import UserApi from "@/apis/userApi";
+import UserApi from "../../apis/userApi";
 import { GetListInput, UserInfoDto } from "@/module/Users";
 import { PagedResultDto } from "@/module/PagedResultDto";
 import type { TableRowSelection } from 'antd/es/table/interface';
 import CreateUser from "./createUser";
-import userApi from "@/apis/userApi";
+import userApi from "../../apis/userApi";
 
 const { Search } = Input;
 
@@ -121,7 +121,7 @@ class UserList extends Component<IProps, IState> {
             input
           })
         }
-      }).catch(error => {
+      }).catch((error:any) => {
         input.loading = false;
         this.setState({
           input
@@ -134,7 +134,7 @@ class UserList extends Component<IProps, IState> {
     console.log('rowSelection', rowSelection);
     if (rowSelection.selectedRowKeys) {
       userApi.delete(rowSelection.selectedRowKeys)
-        .then(res => {
+        .then((res:any) => {
           message.success('删除成功')
           this.getUserList()
         })

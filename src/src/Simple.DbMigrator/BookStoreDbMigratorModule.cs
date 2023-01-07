@@ -4,7 +4,7 @@ using Volo.Abp.Autofac;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Modularity;
 
-namespace Acme.BookStore.DbMigrator;
+namespace Simple.DbMigrator;
 
 [DependsOn(
     typeof(AbpAutofacModule),

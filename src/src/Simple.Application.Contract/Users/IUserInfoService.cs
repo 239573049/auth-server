@@ -34,4 +34,10 @@ public interface IUserInfoService
     /// <param name="dto"></param>
     /// <returns></returns>
     Task CreateAsync(CreateUserInput dto);
+
+    /// <summary>
+    /// 获取角色下所有用户
+    /// </summary>
+    /// <returns></returns>
+    Task<PagedResultDto<UserInfoDto>> GetRoleUserListAsync(GetRoleUserListInput input);
 }

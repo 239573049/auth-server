@@ -15,6 +15,11 @@ export const routes: any[] = [
                 component: '@/pages/admin/home/index',
             },
             {
+                name: '角色管理',
+                path: '/role',
+                component: '@/pages/admin/role/index',
+            },
+            {
                 name: '用户管理',
                 path: '/user',
                 component: '@/pages/admin/user/index',

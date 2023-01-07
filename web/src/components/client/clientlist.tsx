@@ -5,70 +5,10 @@ import { Table, Tooltip, Tag, message, Space, Input, Button } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import openiddictApi from "@/apis/openiddictApi";
 import { PagedResultDto } from "@/module/PagedResultDto";
+import UpdateClient from "./updateClient";
 
 const { Search } = Input;
 
-const columns: ColumnsType<OpenIddictApplication> = [
-    {
-        title: 'ClientId',
-        width: 100,
-        dataIndex: 'clientId',
-        key: 'clientId',
-        fixed: 'left',
-    },
-    {
-        title: 'ConsentType',
-        dataIndex: 'consentType',
-        key: 'consentType',
-        width: 150,
-    },
-    {
-        title: 'DisplayName',
-        dataIndex: 'displayName',
-        key: 'displayName',
-        width: 150,
-    },
-    {
-        title: '回调地址',
-        dataIndex: 'redirectUris',
-        key: 'redirectUris',
-        width: 150,
-    },
-    {
-        title: 'DisplayName',
-        dataIndex: 'displayName',
-        key: 'displayName',
-        width: 150,
-    },
-    {
-        title: 'DisplayName',
-        dataIndex: 'displayName',
-        key: 'displayName',
-        width: 150,
-    },
-    {
-        title: '权限项',
-        dataIndex: 'permissions',
-        key: 'permissions',
-        render: (value) => {
-            var s = JSON.parse(value) as [];
-            var dom = s.map(x => {
-                return <Tag color="processing">{x}</Tag>
-            })
-            return (
-                <Tooltip placement="topLeft" title={dom} color='blue' arrowPointAtCenter>
-                    <Tag color="processing">查看权限项</Tag>
-                </Tooltip>)
-        },
-        width: 150,
-    },
-    {
-        title: '应用类型',
-        dataIndex: 'type',
-        key: 'type',
-        width: 150,
-    }
-];
 
 interface IProps {
 
@@ -80,6 +20,11 @@ interface IState {
     input: GetOpenIddictListInput,
     loading: boolean,
     data: PagedResultDto<OpenIddictApplication>,
+    columns:any[],
+    update:{
+        updateOpen:boolean,
+        value:OpenIddictApplication | null
+    }
 }
 
 
@@ -99,9 +44,95 @@ export default class ClientList extends Component<IProps, IState> {
         data: {
             items: [],
             totalCount: 0
+        },
+        columns: [
+            {
+                title: 'ClientId',
+                width: 100,
+                dataIndex: 'clientId',
+                key: 'clientId',
+                fixed: 'left',
+            },
+            {
+                title: 'ConsentType',
+                dataIndex: 'consentType',
+                key: 'consentType',
+                width: 150,
+            },
+            {
+                title: 'DisplayName',
+                dataIndex: 'displayName',
+                key: 'displayName',
+                width: 150,
+            },
+            {
+                title: '回调地址',
+                dataIndex: 'redirectUris',
+                key: 'redirectUris',
+                width: 150,
+            },
+            {
+                title: 'DisplayName',
+                dataIndex: 'displayName',
+                key: 'displayName',
+                width: 150,
+            },
+            {
+                title: 'DisplayName',
+                dataIndex: 'displayName',
+                key: 'displayName',
+                width: 150,
+            },
+            {
+                title: '权限项',
+                dataIndex: 'permissions',
+                key: 'permissions',
+                render: (value: string) => {
+                    var s = JSON.parse(value) as [];
+                    var dom = s.map(x => {
+                        return <Tag color="processing">{x}</Tag>;
+                    });
+                    return (
+                        <Tooltip placement="topLeft" title={dom} color='blue' arrowPointAtCenter>
+                            <Tag color="processing">查看权限项</Tag>
+                        </Tooltip>);
+                },
+                width: 150,
+            },
+            {
+                title: '应用类型',
+                dataIndex: 'type',
+                key: 'type',
+                width: 150,
+            },
+            {
+                title: '操作',
+                dataIndex: 'update',
+                key: 'update',
+                render: (_: any, options: any) => {
+                    return (
+                        <div>
+                            <Button style={{ marginLeft: '2px' }} type="primary" onClick={()=>this.updateClick(options)}>编辑</Button>
+                            <Button style={{ marginLeft: '2px' }} type="primary" danger>删除</Button>
+                        </div>);
+                },
+                width: 150,
+            },
+        ],
+        update: {
+            updateOpen: false,
+            value: null
         }
     }
 
+    updateClick(value:any){
+        var {update} = this.state;
+        update.value = value;
+        update.updateOpen = true;
+        this.setState({
+            update
+        })
+    }
     getList() {
         this.setState({
             loading: true
@@ -131,7 +162,7 @@ export default class ClientList extends Component<IProps, IState> {
     }
 
     render() {
-        var { rowSelection, loading, data, input } = this.state;
+        var { rowSelection, loading, data, input, columns,update} = this.state;
         return (<div>
             <Space style={{ marginBottom: 16 }}>
                 <Search loading={loading} placeholder="搜索客户端列表" value={input.keywords} onChange={(value) => {
@@ -145,6 +176,15 @@ export default class ClientList extends Component<IProps, IState> {
 
             </Space>
             <Table rowSelection={rowSelection} dataSource={data.items} loading={loading} columns={columns} scroll={{ x: 1500, y: 600 }} />
+            {update.updateOpen? <UpdateClient 
+                value={update.value}
+                open={update.updateOpen} onClose={()=>{
+                    update.updateOpen = false;
+                    this.setState({
+                        update
+                    })
+                }}/>:<></>}
+               
         </div>)
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Simple.Application.Permissions;
 using Volo.Abp.Account;
+using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -30,5 +32,6 @@ public class SimpleApplicationModule : AbpModule
         {
             options.AddMaps<SimpleApplicationModule>();
         });
+
     }
 }
