@@ -83,10 +83,10 @@ export default {
         component: '@/pages/admin/user/index',
       },
       {
-        path: '/client',
-        name: '客户端管理',
+        path: '/application',
+        name: '应用管理',
         icon: <Icon component={clientSvg} />,
-        component: '@/pages/admin/client/index',
+        component: '@/pages/admin/application/index',
       },
       {
         path: '/setting',

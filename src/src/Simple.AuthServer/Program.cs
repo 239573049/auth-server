@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Simple.middlewares;
+using Volo.Abp.Identity;
 
 namespace Simple;
 
@@ -44,7 +45,6 @@ public class Program
 
             await builder.AddApplicationAsync<SimpleAuthServerModule>();
             var app = builder.Build();
-
             app.UseMiddleware<SimpleAuthServerMiddleware>();
 
             await app.InitializeApplicationAsync();

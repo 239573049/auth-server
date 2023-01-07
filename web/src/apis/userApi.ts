@@ -26,7 +26,7 @@ class UserApi {
      * @returns 
      */
     createUser(dto: UserInfoDto) {
-        dto.avatar = "https://blog-simple.oss-cn-shenzhen.aliyuncs.com/OIP-C.jpg";
+        dto.avatar = "https://blog-simple.oss-cn-shenzhen.aliyuncs.com/Avatar.jpg";
         return request.post(prefix, {
             data: dto,
             requestType: 'json'

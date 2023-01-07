@@ -12,6 +12,8 @@ export default class Role extends Component{
         var {clickData} = this.state;
         return(<div>
             <RoleList style={{width:'400px',float: 'left',}} className={''} roleClick={(value:IdentityRoleDto)=>{
+                console.log('IdentityRoleDto',value);
+                
                 this.setState({
                     clickData:value
                 })

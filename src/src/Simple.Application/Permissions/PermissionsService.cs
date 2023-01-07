@@ -35,10 +35,11 @@ public class PermissionsService : ApplicationService , IPermissionsService
     public async Task<List<PermissionWithGrantedDto>> GetAllForRoleAsync(string providerKey)
     {
         // 获取指定角色的权限配置
-        var data = await _permissionManager.GetAllAsync("R", providerKey);
+        var data = (await _permissionManager.GetAllAsync("R", providerKey))
+            .Where(x=>true );
 
         // 转换实体
-        var dto = ObjectMapper.Map<List<PermissionWithGrantedProviders>, List<PermissionWithGrantedDto>>(data);
+        var dto = ObjectMapper.Map<IEnumerable<PermissionWithGrantedProviders>, List<PermissionWithGrantedDto>>(data);
 
         // 将本地化描述添加到实体
         dto.ForEach(x => x.Description = L[x.Name]);

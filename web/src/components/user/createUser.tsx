@@ -9,7 +9,7 @@ import {
     Upload,
     InputNumber
 } from 'antd';
-import userApi from "@/apis/userApi";
+import userApi from "../../apis/userApi";
 
 interface IProps {
     onClose: any,
@@ -40,7 +40,7 @@ export default class CreateUser extends Component<IProps, IState>{
 
     onFinish(value: any) {
         userApi.createUser(value.user)
-            .then(res => {
+            .then((res:any) => {
                 message.success('创建成功')
                 this.props.onClose(true)
             })

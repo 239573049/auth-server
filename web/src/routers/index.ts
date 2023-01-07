@@ -25,9 +25,9 @@ export const routes: any[] = [
                 component: '@/pages/admin/user/index',
             },
             {
-                name: '客户端管理',
-                path: '/client',
-                component: '@/pages/admin/client/index',
+                name: '应用管理',
+                path: '/application',
+                component: '@/pages/admin/application/index',
             },
             {
                 name: '系统设置',
