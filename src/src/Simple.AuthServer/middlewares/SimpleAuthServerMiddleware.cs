@@ -4,7 +4,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-namespace Simple.middlewares;
+
+namespace Simple.Middlewares;
 
 public class SimpleAuthServerMiddleware: IMiddleware
 {
@@ -23,11 +24,10 @@ public class SimpleAuthServerMiddleware: IMiddleware
     {
         await next(context);
 
-        if (context.Response.StatusCode == 404)
+        if (context.Response.StatusCode == 404 || string.IsNullOrEmpty(context.Request.Path.Value))
         {
-            if (File.Exists(Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html")) &&
-                !context.Request.Path.ToString().StartsWith("/api") &&
-                !context.Request.Path.Value.StartsWith("/connect"))
+            if ((!context.Request.Path.ToString().StartsWith("/api") &&
+                !context.Request.Path.Value.StartsWith("/connect")) || string.IsNullOrEmpty(context.Request.Path.Value))
             {
                 var extType = Path.GetExtension(context.Request.Path);
                 if (_contentTypes.TryGetValue(extType, out var contentType))

@@ -55,7 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="middlewares\" />
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 
 </Project>
