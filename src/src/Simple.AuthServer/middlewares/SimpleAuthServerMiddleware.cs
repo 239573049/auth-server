@@ -24,10 +24,10 @@ public class SimpleAuthServerMiddleware: IMiddleware
     {
         await next(context);
 
-        if (context.Response.StatusCode == 404 || string.IsNullOrEmpty(context.Request.Path.Value))
+        if (context.Response.StatusCode == 404 || context.Request.Path.Value=="/")
         {
             if ((!context.Request.Path.ToString().StartsWith("/api") &&
-                !context.Request.Path.Value.StartsWith("/connect")) || string.IsNullOrEmpty(context.Request.Path.Value))
+                !context.Request.Path.Value.StartsWith("/connect")) || context.Request.Path.Value == "/")
             {
                 var extType = Path.GetExtension(context.Request.Path);
                 if (_contentTypes.TryGetValue(extType, out var contentType))
