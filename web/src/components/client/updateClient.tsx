@@ -1,7 +1,8 @@
 import { Component, ReactNode } from 'react';
-import { Button, Drawer, Space } from 'antd';
+import { Button, Drawer, Space,message } from 'antd';
 import { OpenIddictApplication } from '@/module/OpenIddictApplication';
 import { Col, Tag, Form, Input, Row, Select } from 'antd';
+import openiddictApi from '@/apis/openiddictApi';
 
 const { Search } = Input;
 
@@ -29,7 +30,14 @@ export default class UpdateClient extends Component<IProps, IState> {
   }
 
   onOk() {
-    this.props.onClose(true)
+    var {value} = this.state;
+    if(value){
+      openiddictApi.put(value)
+        .then(res=>{
+          message.success('成功')
+          this.props.onClose(true)
+        })
+    }
   }
 
   /**
@@ -79,17 +87,27 @@ export default class UpdateClient extends Component<IProps, IState> {
     
   }
 
+  setValue(key:string,data:any){
+    var { value } = this.state;
+    if(value){
+      value[key] = data;
+      this.setState({
+        value
+      })
+    }
+  }
+
   render() {
     var { value ,permission} = this.state;
     return (<Drawer
       title="编辑客户端"
       width={720}
-      onClose={this.props.onClose}
+      onClose={()=>this.props.onClose(false)}
       open={this.props.open}
       bodyStyle={{ paddingBottom: 80 }}
       extra={
         <Space>
-          <Button onClick={this.props.onClose}>取消</Button>
+          <Button onClick={()=>this.props.onClose(false)}>取消</Button>
           <Button onClick={()=>this.onOk()} type="primary">
             保存
           </Button>
@@ -100,13 +118,33 @@ export default class UpdateClient extends Component<IProps, IState> {
         <Row gutter={16}>
           <Col span={12}>
             <span>请输入客户端uri:</span>
-              <Input value={value?.clientUri} placeholder="请输入客户端uri" />
+              <Input onChange={(e)=>this.setValue('clientUri',e.target.value)} value={value?.clientUri} placeholder="请输入客户端uri" />
           </Col>
           <Col span={12}>
             <span>请输入许可类型:</span>
-              <Input
+               <Select
+                defaultValue={value?.consentType}
                 value={value?.consentType}
-                placeholder="请输入许可类型"
+                style={{ width: 120 ,padding: '5px'}}
+                onChange={(e)=>this.setValue('consentType',e)}
+                options={[
+                  {
+                    value: 'explicit',
+                    label: 'explicit',
+                  },
+                  {
+                    value: 'external',
+                    label: 'external',
+                  },
+                  {
+                    value: 'implicit',
+                    label: 'implicit',
+                  },
+                  {
+                    value: 'systematic',
+                    label: 'systematic',
+                  }
+                ]}
               />
           </Col>
         </Row>
@@ -116,12 +154,14 @@ export default class UpdateClient extends Component<IProps, IState> {
             <span>请输入显示名称:</span>
               <Input
                 value={value?.displayName}
+                onChange={(e)=>this.setValue('displayName',e.target.value)} 
                 placeholder="请输入显示名称"
               />
           </Col>
           <Col span={12}>
             <span>请输入logo地址:</span>
-              <Input value={value?.logoUri} placeholder="请输入logo地址" />
+              <Input 
+                onChange={(e)=>this.setValue('logoUri',e.target.value)}  value={value?.logoUri} placeholder="请输入logo地址" />
           </Col>
         </Row>
         <Row gutter={16} >
@@ -133,6 +173,7 @@ export default class UpdateClient extends Component<IProps, IState> {
                 allowClear
                 enterButton="添加"
                 size="large"
+                style={{ padding: '5px' }}
                 value={permission}
                 onChange={(e)=>{
                   this.setState({
@@ -146,7 +187,22 @@ export default class UpdateClient extends Component<IProps, IState> {
         <Row gutter={16}>
           <Col span={16}>
             <span>请输入type:</span>
-              <Input value={value?.type} placeholder="请输入type" />
+               <Select
+                defaultValue={value?.type}
+                value={value?.type}
+                style={{ width: 120,padding: '5px' }}
+                onChange={(e)=>this.setValue('type',e)}
+                options={[
+                  {
+                    value: 'confidential',
+                    label: 'confidential',
+                  },
+                  {
+                    value: 'public',
+                    label: 'public',
+                  }
+                ]}
+              />
           </Col>
         </Row>
       </Form>

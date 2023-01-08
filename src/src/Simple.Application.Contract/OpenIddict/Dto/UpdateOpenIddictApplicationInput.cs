@@ -13,13 +13,6 @@ public class UpdateOpenIddictApplicationInput : EntityDto<Guid>
     public string ClientId { get; set; }
 
     /// <summary>
-    /// Gets or sets the client secret associated with the current application.
-    /// Note: depending on the application manager used to create this instance,
-    /// this property may be hashed or encrypted for security reasons.
-    /// </summary>
-    public string ClientSecret { get; set; }
-
-    /// <summary>
     /// Gets or sets the consent type associated with the current application.
     /// </summary>
     public string ConsentType { get; set; }
@@ -27,29 +20,29 @@ public class UpdateOpenIddictApplicationInput : EntityDto<Guid>
     /// <summary>
     /// Gets or sets the display name associated with the current application.
     /// </summary>
-    public string DisplayName { get; set; }
+    public string? DisplayName { get; set; }
 
     /// <summary>
     /// Gets or sets the localized display names
     /// associated with the current application,
     /// serialized as a JSON object.
     /// </summary>
-    public string DisplayNames { get; set; }
+    public string? DisplayNames { get; set; }
 
     /// <summary>
     /// Gets or sets the permissions associated with the
     /// current application, serialized as a JSON array.
     /// </summary>
-    public string Permissions { get; set; }
+    public string? Permissions { get; set; }
 
     /// <summary>
     /// Gets or sets the application type associated with the current application.
     /// </summary>
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     /// <summary>URI to further information about client.</summary>
-    public string ClientUri { get; set; }
+    public string? ClientUri { get; set; }
 
     /// <summary>URI to client logo.</summary>
-    public string LogoUri { get; set; }
+    public string? LogoUri { get; set; }
 }

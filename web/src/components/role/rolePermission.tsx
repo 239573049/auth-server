@@ -6,7 +6,7 @@ import permissionsApi from '@/apis/permissionsApi';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 interface IProps{
-    role:IdentityRoleDto
+    role:IdentityRoleDto|null
 }   
 
 export default class RolePermission extends Component<IProps>{
@@ -24,7 +24,7 @@ export default class RolePermission extends Component<IProps>{
       this.getPermissionList(value.name);
     });
 
-    this.getPermissionList(this.props.role.name)
+    this.getPermissionList(this.props.role!.name)
   }
 
   componentWillUnmount(): void {
