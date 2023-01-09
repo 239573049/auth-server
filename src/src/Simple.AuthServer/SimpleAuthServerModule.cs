@@ -87,17 +87,6 @@ public class SimpleAuthServerModule : AbpModule
             options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
         });
 
-        Configure<AbpBundlingOptions>(options =>
-        {
-            options.StyleBundles.Configure(
-                LeptonXLiteThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                }
-            );
-        });
-
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
             options

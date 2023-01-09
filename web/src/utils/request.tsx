@@ -3,6 +3,9 @@ import { history } from 'umi';
 import { GetQueryValue } from './locationhelper';
 import { message } from 'antd';
 // const baseUrl = 'http://auth.tokengo.top';
+
+console.log('Development',process.env);
+
 const baseUrl = 'https://localhost:44322';
 
 const errorHandler = (error: any) => {
