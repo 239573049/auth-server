@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Simple.Middlewares;
 
-public class SimpleAuthServerMiddleware: IMiddleware
+public class SimpleAuthServerMiddleware : IMiddleware
 {
     private static Dictionary<string, string> _contentTypes = new()
     {
@@ -24,12 +24,13 @@ public class SimpleAuthServerMiddleware: IMiddleware
     {
         await next(context);
 
-        if (context.Response.StatusCode == 404 || context.Request.Path.Value=="/")
+        if (context.Response.StatusCode == 404 || context.Request.Path.Value == "/")
         {
             if ((!context.Request.Path.ToString().StartsWith("/api") &&
                 !context.Request.Path.Value.StartsWith("/connect")) || context.Request.Path.Value == "/")
             {
                 var extType = Path.GetExtension(context.Request.Path);
+                context.Response.StatusCode = 200;
                 if (_contentTypes.TryGetValue(extType, out var contentType))
                 {
                     context.Response.ContentType = contentType;

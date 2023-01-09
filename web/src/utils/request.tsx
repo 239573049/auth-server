@@ -2,23 +2,24 @@ import { extend } from 'umi-request';
 import { history } from 'umi';
 import { GetQueryValue } from './locationhelper';
 import { message } from 'antd';
-// const baseUrl = 'http://auth.tokengo.top';
+var baseUrl;
 
-console.log('Development',process.env);
+if (process.env.NODE_ENV === "development") {
 
-const baseUrl = 'https://localhost:44322';
+    baseUrl = 'http://localhost:44322';
+}
 
 const errorHandler = (error: any) => {
 };
 
 function getToken() {
-    var token =  window.localStorage.getItem('token')
-    if(token){
+    var token = window.localStorage.getItem('token')
+    if (token) {
         return token
     }
-    token= GetQueryValue("token");
-    if(token){
-        window.localStorage.setItem("token",token)
+    token = GetQueryValue("token");
+    if (token) {
+        window.localStorage.setItem("token", token)
     }
     return token;
 }
@@ -33,19 +34,19 @@ const request = extend({
     credentials: 'include', // 默认请求是否带上cookie
 });
 
-request.use(async (context,next)=>{
+request.use(async (context, next) => {
     var token = getToken();
-    if(context.req.options.headers&&token){
+    if (context.req.options.headers && token) {
         context.req.options.headers["Authorization"] = `Bearer ${token}`;
     }
     await next()
 })
 
-request.interceptors.response.use(async(response,option)=>{
-    if(response.status === 401){
+request.interceptors.response.use(async (response, option) => {
+    if (response.status === 401) {
         history.push('/login')
         return response;
-    }else if(response.status === 403){
+    } else if (response.status === 403) {
         message.error('403 无操作权限')
     }
     return response;
