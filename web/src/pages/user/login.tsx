@@ -45,7 +45,7 @@ export default () => {
     }
 
     return (
-        <div style={{ backgroundColor: 'white', }} className="plan">
+        <div style={{ backgroundColor: 'white', }} className="plan" key="login">
             <LoginForm
                 logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
                 title="授权中心管理平台"

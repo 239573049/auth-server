@@ -1,10 +1,10 @@
 import {
-  ChromeFilled,
   HomeFilled,
   SettingFilled,
   UserOutlined,
 } from '@ant-design/icons';
 import Icon from '@ant-design/icons';
+import Texty from 'rc-texty';
 
 const clientSvg = () => {
   return (
@@ -66,31 +66,31 @@ export default {
     routes: [
       {
         path: '/',
-        name: '首页',
+        name: <Texty mode="random">首页</Texty>,
         icon: <HomeFilled />,
         component: '@/pages/admin/home/index',
       },
       {
         path: '/role',
-        name: '角色管理',
+        name: <Texty mode="random">角色管理</Texty>,
         icon: <Icon component={roleSvg as any} />,
         component: '@/pages/admin/role/index',
       },
       {
         path: '/user',
-        name: '用户管理',
+        name: <Texty  mode="random">用户管理</Texty>,
         icon: <UserOutlined />,
         component: '@/pages/admin/user/index',
       },
       {
         path: '/application',
-        name: '应用管理',
+        name: <Texty  mode="random">应用管理</Texty>,
         icon: <Icon component={clientSvg} />,
         component: '@/pages/admin/application/index',
       },
       {
         path: '/setting',
-        name: '系统设置',
+        name: <Texty  mode="random">系统设置</Texty>,
         icon: <SettingFilled />,
         component: '@/pages/admin/setting/index',
       },

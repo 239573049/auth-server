@@ -23,6 +23,9 @@
   "dependencies": {
     "@ant-design/pro-components": "^2.3.47",
     "@ant-design/pro-layout": "^7.4.0",
+    "rc-queue-anim": "^2.0.0",
+    "rc-texty": "^0.2.0",
+    "rc-tween-one": "^3.0.6",
     "react": "17.x",
     "react-dom": "17.x",
     "umi": "^3.5.36"

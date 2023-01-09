@@ -10,7 +10,7 @@ export default class Role extends Component{
 
     render(): ReactNode {
         var {clickData} = this.state;
-        return(<div>
+        return(<div key="userlist">
             <RoleList style={{width:'400px',float: 'left',}} className={''} roleClick={(value:IdentityRoleDto)=>{
                 console.log('IdentityRoleDto',value);
                 

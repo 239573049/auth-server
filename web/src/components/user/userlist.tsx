@@ -151,7 +151,7 @@ class UserList extends Component<IProps, IState> {
   render() {
     var { data, input, rowSelection, addDrawer } = this.state
     return (
-      <div>
+      <div key="userlist">
         <Space style={{ marginBottom: 16 }}>
           <Search loading={input.loading} placeholder="搜索用户列表" value={input?.keywords} onChange={(value) => {
             if (input) {

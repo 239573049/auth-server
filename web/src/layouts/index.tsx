@@ -5,6 +5,11 @@ import menu from './menu'
 import { history } from 'umi'
 import userApi from '@/apis/userApi';
 import { UserInfoDto } from '@/module/Users';
+import logo from '../assets/logo.png'
+import QueueAnim from 'rc-queue-anim';
+import 'rc-texty/assets/index.css';
+
+import Texty from 'rc-texty';
 
 interface IProps {
 
@@ -21,7 +26,7 @@ export default class App extends Component<IProps, IState>{
     user: {
       userName: 'test',
       name: 'test',
-      avatar: '',
+      avatar: 'https://blog-simple.oss-cn-shenzhen.aliyuncs.com/Avatar.jpg',
       surname: '',
       email: '239573049@qq.com',
       phoneNumber: '',
@@ -47,7 +52,6 @@ export default class App extends Component<IProps, IState>{
 
   render(): ReactNode {
     var { pathname, user } = this.state;
-
     return (
       <div
         id="test-pro-layout"
@@ -82,18 +86,20 @@ export default class App extends Component<IProps, IState>{
             pathname,
           }}
           title="授权中心"
-          logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
+          logo={logo}
           avatarProps={{
-            src: user?.avatar ?? '',
-            title: user?.name ?? '',
+            src: user?.avatar ?? 'https://blog-simple.oss-cn-shenzhen.aliyuncs.com/Avatar.jpg',
+            title: <Texty>{user?.name??"null"}</Texty>,
             size: 'small',
           }}
           actionsRender={(props) => {
             if (props.isMobile) return [];
             return [
-              <InfoCircleFilled key="InfoCircleFilled" />,
-              <QuestionCircleFilled key="QuestionCircleFilled" />,
-              <GithubFilled key="GithubFilled" href='https://github.com/239573049' />,
+              <QueueAnim duration={1000} interval={20}>
+                <InfoCircleFilled key="InfoCircleFilled" />,
+                <QuestionCircleFilled key="QuestionCircleFilled" />,
+                <GithubFilled key="GithubFilled" href='https://github.com/239573049' />,
+              </QueueAnim>
             ];
           }}
           menuItemRender={(item, dom) =>
@@ -107,7 +113,9 @@ export default class App extends Component<IProps, IState>{
                 });
               }}
             >
-              {dom}
+              <QueueAnim duration={1000} interval={20}>
+                {dom}
+              </QueueAnim>
             </div>
           )}
         >

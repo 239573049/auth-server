@@ -178,7 +178,7 @@ export default class ClientList extends Component<IProps, IState> {
   render() {
     var { rowSelection, loading, data, input, columns, update } = this.state;
     return (
-      <div>
+      <div key="userlist">
         <Space style={{ marginBottom: 16 }}>
           <Search
             loading={loading}
