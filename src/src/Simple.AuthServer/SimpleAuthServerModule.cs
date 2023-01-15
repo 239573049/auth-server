@@ -96,7 +96,7 @@ public class SimpleAuthServerModule : AbpModule
 
         Configure<AbpAuditingOptions>(options =>
         {
-            //options.IsEnabledForGetRequests = true;
+            options.IsEnabledForGetRequests = true;
             options.ApplicationName = "AuthServer";
         });
 

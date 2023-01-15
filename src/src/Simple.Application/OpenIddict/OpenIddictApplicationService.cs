@@ -15,12 +15,28 @@ namespace Simple.Application.OpenIddict;
 public class OpenIddictApplicationService : ApplicationService, IOpenIddictApplicationService
 {
     private readonly IOpenIddictApplicationRepository _openIddictApplicationRepository;
-    private readonly IRepository<OpenIddictApplication,Guid> _openIddictApplicationRepositoryGuid;
+    private readonly IRepository<OpenIddictApplication, Guid> _openIddictApplicationRepositoryGuid;
 
     public OpenIddictApplicationService(IOpenIddictApplicationRepository openIddictApplicationRepository, IRepository<OpenIddictApplication, Guid> openIddictApplicationRepositoryGuid)
     {
         _openIddictApplicationRepository = openIddictApplicationRepository;
         _openIddictApplicationRepositoryGuid = openIddictApplicationRepositoryGuid;
+    }
+
+    /// <inheritdoc/>
+    public async Task CreateAsync(OpenIddictApplicationInput input)
+    {
+        var data = ObjectMapper.Map<OpenIddictApplicationInput, OpenIddictApplication>(input);
+
+        data.ClientId = Guid.NewGuid().ToString("N");
+        data.ClientSecret = Guid.NewGuid().ToString("N");
+
+        if (await _openIddictApplicationRepositoryGuid.AnyAsync(x => x.ClientId == data.ClientId))
+        {
+            data.ClientId = Guid.NewGuid().ToString("N");
+        }
+
+        await _openIddictApplicationRepository.InsertAsync(data);
     }
 
     /// <inheritdoc />
@@ -39,7 +55,7 @@ public class OpenIddictApplicationService : ApplicationService, IOpenIddictAppli
 
     /// <inheritdoc />
     [Authorize(SimplePermissions.OpenIddictApplication.Update)]
-    public async Task UpdateAsync(UpdateOpenIddictApplicationInput input)
+    public async Task UpdateAsync(OpenIddictApplicationInput input)
     {
         var data = await _openIddictApplicationRepositoryGuid.FirstOrDefaultAsync(x =>
             x.Id == input.Id && x.ClientId == input.ClientId);
@@ -50,7 +66,7 @@ public class OpenIddictApplicationService : ApplicationService, IOpenIddictAppli
         }
 
         data.ClientUri = input.ClientUri;
-        data.ConsentType=input.ConsentType;
+        data.ConsentType = input.ConsentType;
         data.DisplayName = input.DisplayName;
         data.LogoUri = input.LogoUri;
         data.Permissions = input.Permissions;

@@ -9,5 +9,7 @@ public class OpenIddictApplicationMapperProfile : Profile
     public OpenIddictApplicationMapperProfile()
     {
         CreateMap<OpenIddictApplication, OpenIddictApplicationDto>();
+
+        CreateMap<OpenIddictApplicationInput, OpenIddictApplication>();
     }
 }

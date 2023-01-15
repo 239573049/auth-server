@@ -19,5 +19,12 @@ public interface IOpenIddictApplicationService
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    Task UpdateAsync(UpdateOpenIddictApplicationInput input);
+    Task UpdateAsync(OpenIddictApplicationInput input);
+
+    /// <summary>
+    /// 新增应用程序
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task CreateAsync(OpenIddictApplicationInput input);
 }

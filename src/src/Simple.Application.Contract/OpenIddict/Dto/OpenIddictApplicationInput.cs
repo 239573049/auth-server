@@ -5,7 +5,7 @@ namespace Simple.Application.Contract.OpenIddict.Dto;
 /// <summary>
 /// 编辑应用程序模型
 /// </summary>
-public class UpdateOpenIddictApplicationInput : EntityDto<Guid>
+public class OpenIddictApplicationInput : EntityDto<Guid>
 {
     /// <summary>
     /// Gets or sets the client identifier associated with the current application.
