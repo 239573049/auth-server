@@ -195,6 +195,7 @@ export default class ClientList extends Component<IProps, IState> {
             onSearch={() => this.getList()}
             enterButton
           />
+          <Button type="primary">新增</Button>
         </Space>
         <Table
           rowSelection={rowSelection}
