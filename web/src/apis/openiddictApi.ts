@@ -24,6 +24,18 @@ class OpenIddictApi {
             data:input
         })
     }
+
+    
+    /**
+     * 新增应用程序
+     * @param input 
+     * @returns 
+     */
+    create(input:OpenIddictApplication){
+        return request.post(prefix,{
+            data:input
+        })
+    }
 }
 
 export default new OpenIddictApi;

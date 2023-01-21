@@ -1,5 +1,5 @@
 import { Component, ReactNode } from 'react';
-import { Button, Drawer, Space,message } from 'antd';
+import { Button, Drawer, Space, message } from 'antd';
 import { OpenIddictApplication } from '@/module/OpenIddictApplication';
 import { Col, Tag, Form, Input, Row, Select } from 'antd';
 import openiddictApi from '@/apis/openiddictApi';
@@ -12,44 +12,65 @@ interface IProps {
   value: OpenIddictApplication | null;
 }
 interface IState {
-  value:OpenIddictApplication | null;
-  permission:string
+  value: OpenIddictApplication | null;
+  permission: string;
 }
 
 export default class CreateClient extends Component<IProps, IState> {
-
-  state: Readonly<IState>={
-    value: null,
-    permission:''
-  }
+  state: Readonly<IState> = {
+    value: {
+      clientId: null,
+      clientSecret: null,
+      clientUri: null,
+      consentType: null,
+      isDeleted:false,
+      deleterId:null,
+      deletionTime:null,
+      displayName: null,
+      displayNames: null,
+      permissions: null,
+      postLogoutRedirectUris: null,
+      properties: null,
+      redirectUris: null,
+      requirements: null,
+      type: null,
+      logoUri: null,
+    },
+    permission: '',
+  };
 
   componentDidMount(): void {
     this.setState({
-      value:this.props.value
-    })
+      value: this.props.value,
+    });
   }
 
   onOk() {
-    var {value} = this.state;
-    if(value){
-      openiddictApi.put(value)
-        .then(res=>{
-          message.success('成功')
-          this.props.onClose(true)
-        })
+    var { value } = this.state;
+    console.log(value);
+
+    if (value) {
+      openiddictApi.create(value).then((res) => {
+        message.success('成功');
+        this.props.onClose(true);
+      });
     }
   }
 
   /**
    * 解析权限项为组件
-   * @param permissions 
-   * @returns 
+   * @param permissions
+   * @returns
    */
   getPermissions(permissions: string | undefined) {
     var permission = JSON.parse(permissions ?? '[]') as string[];
     var s = permission.map((x) => {
       // 不添加visible如果点击关闭组件会自动隐藏
-      return <Tag visible={true} closable onClose={()=>this.deletePermission(x)}>{x}</Tag>;
+      return (
+        <Tag visible={true} closable onClose={() => this.deletePermission(x)}>
+          {x}
+        </Tag>
+      );
     });
     return s;
   }
@@ -57,76 +78,80 @@ export default class CreateClient extends Component<IProps, IState> {
   /**
    * 添加权限项
    */
-  addPermissions(){
-    var {permission,value} = this.state;
+  addPermissions() {
+    var { permission, value } = this.state;
     // 解析成数组
     var p = JSON.parse(value?.permissions ?? '[]') as string[];
     // 将权限项添加到数组
-    p.push(permission)
+    p.push(permission);
     // 在解析成字符串赋值到permissions
     value!.permissions = JSON.stringify(p);
     this.setState({
-      permission:'',
-      value:value
-    })
-
+      permission: '',
+      value: value,
+    });
   }
 
-  deletePermission(data:string){
+  deletePermission(data: string) {
     var { value } = this.state;
     var p = JSON.parse(value?.permissions ?? '[]') as string[];
-    
-    p.splice(p.indexOf(data),1)
 
-    if(value){
-      value.permissions = JSON.stringify(p)
+    p.splice(p.indexOf(data), 1);
+
+    if (value) {
+      value.permissions = JSON.stringify(p);
       this.setState({
-        value
-      })
+        value,
+      });
     }
-    
   }
 
-  setValue(key:string,data:any){
+  setValue(key: string, data: any) {
     var { value } = this.state;
-    if(value){
+    if (value) {
       value[key] = data;
       this.setState({
-        value
-      })
+        value,
+      });
     }
   }
 
   render() {
-    var { value ,permission} = this.state;
-    return (<Drawer
-      title="新增客户端"
-      width={720}
-      onClose={()=>this.props.onClose(false)}
-      open={this.props.open}
-      bodyStyle={{ paddingBottom: 80 }}
-      extra={
-        <Space>
-          <Button onClick={()=>this.props.onClose(false)}>取消</Button>
-          <Button onClick={()=>this.onOk()} type="primary">
-            保存
-          </Button>
-        </Space>
-      }
-    >
-      <Form layout="vertical">
-        <Row gutter={16}>
-          <Col span={12}>
-            <span>请输入客户端uri:</span>
-              <Input onChange={(e)=>this.setValue('clientUri',e.target.value)} value={value?.clientUri} placeholder="请输入客户端uri" />
-          </Col>
-          <Col span={12}>
-            <span>请输入许可类型:</span>
-               <Select
+    var { value, permission } = this.state;
+
+    return (
+      <Drawer
+        title="新增客户端"
+        width={720}
+        onClose={() => this.props.onClose(false)}
+        open={this.props.open}
+        bodyStyle={{ paddingBottom: 80 }}
+        extra={
+          <Space>
+            <Button onClick={() => this.props.onClose(false)}>取消</Button>
+            <Button onClick={() => this.onOk()} type="primary">
+              保存
+            </Button>
+          </Space>
+        }
+      >
+        <Form layout="vertical">
+          <Row gutter={16}>
+            <Col span={12}>
+              <span>请输入客户端uri:</span>
+              <Input
+                onChange={(e) => this.setValue('clientUri', e.target.value)}
+                value={value?.clientUri}
+                placeholder="请输入客户端uri"
+              />
+            </Col>
+            <Col span={12}>
+              <span>请输入许可类型:</span>
+              <Select
                 defaultValue={value?.consentType}
                 value={value?.consentType}
-                style={{ width: 120 ,padding: '5px'}}
-                onChange={(e)=>this.setValue('consentType',e)}
+                style={{ width: 120, padding: '5px' }}
+                onChange={(e) => this.setValue('consentType', e)}
                 options={[
                   {
                     value: 'explicit',
@@ -143,30 +168,33 @@ export default class CreateClient extends Component<IProps, IState> {
                   {
                     value: 'systematic',
                     label: 'systematic',
-                  }
+                  },
                 ]}
               />
-          </Col>
-        </Row>
+            </Col>
+          </Row>
 
-        <Row gutter={16}>
-          <Col span={12}>
-            <span>请输入显示名称:</span>
+          <Row gutter={16}>
+            <Col span={12}>
+              <span>请输入显示名称:</span>
               <Input
                 value={value?.displayName}
-                onChange={(e)=>this.setValue('displayName',e.target.value)} 
+                onChange={(e) => this.setValue('displayName', e.target.value)}
                 placeholder="请输入显示名称"
               />
-          </Col>
-          <Col span={12}>
-            <span>请输入logo地址:</span>
-              <Input 
-                onChange={(e)=>this.setValue('logoUri',e.target.value)}  value={value?.logoUri} placeholder="请输入logo地址" />
-          </Col>
-        </Row>
-        <Row gutter={16} >
-          <Col>
-            <div>权限项:</div>
+            </Col>
+            <Col span={12}>
+              <span>请输入logo地址:</span>
+              <Input
+                onChange={(e) => this.setValue('logoUri', e.target.value)}
+                value={value?.logoUri}
+                placeholder="请输入logo地址"
+              />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <div>权限项:</div>
               {this.getPermissions(value?.permissions)}
               <Search
                 placeholder="添加权限项"
@@ -175,23 +203,31 @@ export default class CreateClient extends Component<IProps, IState> {
                 size="large"
                 style={{ padding: '5px' }}
                 value={permission}
-                onChange={(e)=>{
+                onChange={(e) => {
                   this.setState({
-                    permission:e.target.value
-                  })
+                    permission: e.target.value,
+                  });
                 }}
-                onSearch={()=>this.addPermissions()}
+                onSearch={() => this.addPermissions()}
               />
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={16}>
-            <span>请输入type:</span>
-               <Select
+            </Col>
+            <Col span={12}>
+              <span>请输入回调地址:</span>
+              <Input
+                onChange={(e) => this.setValue('logoUri', e.target.value)}
+                value={value?.logoUri}
+                placeholder="请输入回调地址"
+              />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={16}>
+              <span>请输入type:</span>
+              <Select
                 defaultValue={value?.type}
                 value={value?.type}
-                style={{ width: 120,padding: '5px' }}
-                onChange={(e)=>this.setValue('type',e)}
+                style={{ width: 120, padding: '5px' }}
+                onChange={(e) => this.setValue('type', e)}
                 options={[
                   {
                     value: 'confidential',
@@ -200,13 +236,13 @@ export default class CreateClient extends Component<IProps, IState> {
                   {
                     value: 'public',
                     label: 'public',
-                  }
+                  },
                 ]}
               />
-          </Col>
-        </Row>
-      </Form>
-    </Drawer>
+            </Col>
+          </Row>
+        </Form>
+      </Drawer>
     );
   }
 }

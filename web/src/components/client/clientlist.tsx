@@ -9,6 +9,7 @@ import type { TableRowSelection } from 'antd/es/table/interface';
 import openiddictApi from '@/apis/openiddictApi';
 import { PagedResultDto } from '@/module/PagedResultDto';
 import UpdateClient from './updateClient';
+import CreateClient from './createClient';
 
 const { Search } = Input;
 
@@ -23,6 +24,10 @@ interface IState {
   columns: any[];
   update: {
     updateOpen: boolean;
+    value: OpenIddictApplication | null;
+  };
+  create: {
+    createOpen: boolean;
     value: OpenIddictApplication | null;
   };
 }
@@ -137,6 +142,10 @@ export default class ClientList extends Component<IProps, IState> {
       updateOpen: false,
       value: null,
     },
+    create: {
+      createOpen: false,
+      value: null
+    }
   };
 
   updateClick(value: any) {
@@ -147,6 +156,7 @@ export default class ClientList extends Component<IProps, IState> {
       update,
     });
   }
+
   getList() {
     this.setState({
       loading: true,
@@ -176,7 +186,7 @@ export default class ClientList extends Component<IProps, IState> {
   rowSelected(value: any) {}
 
   render() {
-    var { rowSelection, loading, data, input, columns, update } = this.state;
+    var { rowSelection, loading, data, input, columns, update,create } = this.state;
     return (
       <div key="userlist">
         <Space style={{ marginBottom: 16 }}>
@@ -195,7 +205,12 @@ export default class ClientList extends Component<IProps, IState> {
             onSearch={() => this.getList()}
             enterButton
           />
-          <Button type="primary">新增</Button>
+          <Button type="primary" onClick={()=>{
+            create.createOpen = true;
+            this.setState({
+              create
+            })
+          }}>新增</Button>
         </Space>
         <Table
           rowSelection={rowSelection}
@@ -221,6 +236,15 @@ export default class ClientList extends Component<IProps, IState> {
         ) : (
           <></>
         )}
+        {create.createOpen?(<CreateClient value={create.value} open={create.createOpen} onClose={(value:boolean)=>{
+            if (value) {
+              this.getList();
+            }
+            create.createOpen = false;
+            this.setState({
+              create,
+            });
+        }}/>):(<></>)}
       </div>
     );
   }

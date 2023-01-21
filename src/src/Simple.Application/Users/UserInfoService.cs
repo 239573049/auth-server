@@ -18,10 +18,12 @@ public class UserInfoService : ApplicationService, IUserInfoService
 {
     private readonly IUserInfoRepository _userInfoRepository;
     private readonly IPasswordHasher<IdentityUser> _passwordHasher;
-    public UserInfoService(IUserInfoRepository userInfoRepository, IPasswordHasher<IdentityUser> passwordHasher)
+    private readonly IRepository<IdentityRole> _roleRepository;
+    public UserInfoService(IUserInfoRepository userInfoRepository, IPasswordHasher<IdentityUser> passwordHasher, IRepository<IdentityRole> roleRepository)
     {
         _userInfoRepository = userInfoRepository;
         _passwordHasher = passwordHasher;
+        _roleRepository = roleRepository;
     }
 
     /// <inheritdoc />
@@ -69,7 +71,12 @@ public class UserInfoService : ApplicationService, IUserInfoService
         data.SetPassword(_passwordHasher.HashPassword(data, dto.Password));
         data.SetPhoneNumber(dto.PhoneNumber, true);
         data.ExtraProperties.Add("Avatar", dto.Avatar);
-
+        
+        // 获取所有默认的角色
+        var roles = await _roleRepository.GetListAsync(x => x.IsDefault);
+        
+        // 将默认角色添加到新增用户
+        roles.ForEach(x=>data.AddRole(x.Id));
         await _userInfoRepository.InsertAsync(data, true);
     }
 

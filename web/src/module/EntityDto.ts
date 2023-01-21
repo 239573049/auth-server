@@ -4,6 +4,6 @@ export interface EntityDto<TKey> {
 
 export interface FullAuditedAggregateRoot<TKey> {
     isDeleted: boolean;
-    deleterId: string | null;
-    deletionTime: string | null;
+    deleterId: string | null | undefined;
+    deletionTime: string | null| undefined;
 }
