@@ -34,32 +34,31 @@ public class SimpleAuthServerMiddleware : IMiddleware
     {
         await next(context);
 
-
+        Console.WriteLine("SimpleAuthServerMiddleware");
+        
+        if (ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
+        {
+            context.Response.ContentType = "text/html; charset=utf-8";
+            context.Response.StatusCode = 200;
+            await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
+                AppContext.BaseDirectory, "wwwroot",
+                "index.html")));
+        }
+        
         if (context.Response.StatusCode == 404 || context.Request.Path.Value == "/")
         {
             // 当路由不是api和 授权接口 时进入
             if ((!context.Request.Path.ToString().StartsWith("/api") &&
                  !context.Request.Path.Value.StartsWith("/connect")) || context.Request.Path.Value == "/")
             {
-                if (ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
-                {
-                    context.Response.ContentType = "text/html; charset=utf-8";
-                    context.Response.StatusCode = 200;
-                    await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
-                        AppContext.BaseDirectory, "wwwroot",
-                        "index.html")));
-                }
-                else
-                {
-                    var extType = Path.GetExtension(context.Request.Path);
-                    context.Response.StatusCode = 200;
-                    context.Response.ContentType = _contentTypes.TryGetValue(extType, out var contentType)
-                        ? contentType
-                        : "text/html; charset=utf-8";
-                    await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
-                        AppContext.BaseDirectory, "wwwroot",
-                        "index.html")));
-                }
+                var extType = Path.GetExtension(context.Request.Path);
+                context.Response.StatusCode = 200;
+                context.Response.ContentType = _contentTypes.TryGetValue(extType, out var contentType)
+                    ? contentType
+                    : "text/html; charset=utf-8";
+                await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
+                    AppContext.BaseDirectory, "wwwroot",
+                    "index.html")));
             }
         }
         else if (context.Response.StatusCode == 302)
