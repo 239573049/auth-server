@@ -44,7 +44,7 @@ public class SimpleAuthServerMiddleware : IMiddleware
                 if (ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
                 {
                     context.Response.ContentType = "text/html; charset=utf-8";
-
+                    context.Response.StatusCode = 200;
                     await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
                         AppContext.BaseDirectory, "wwwroot",
                         "index.html")));
