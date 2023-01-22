@@ -22,7 +22,6 @@ public class SimpleAuthServerMiddleware : IMiddleware
 
     public static List<string> ReplaceUri = new()
     {
-        "/",
         "/login",
         "/role",
         "/user",
@@ -34,9 +33,7 @@ public class SimpleAuthServerMiddleware : IMiddleware
     {
         await next(context);
 
-        Console.WriteLine("SimpleAuthServerMiddleware");
-        
-        if (ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
+        if (context.Response.StatusCode == 404 && ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
         {
             context.Response.ContentType = "text/html; charset=utf-8";
             context.Response.StatusCode = 200;
@@ -83,7 +80,6 @@ public class SimpleAuthServerMiddleware : IMiddleware
                 context.Response.Headers["Location"] =
                     location.Replace("https://localhost:44322", "http://localhost:8000");
             }
-
 #endif
         }
     }

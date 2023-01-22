@@ -135,6 +135,9 @@ public class SimpleAuthServerModule : AbpModule
         context.Services.AddOpenIddict()
             .AddServer(options =>
             {
+                options.SetTokenEndpointUris("/connect/authorize")
+                    .SetTokenEndpointUris("/connect/token");
+                
                 // 取消授权时强制的https
                 options.UseAspNetCore()
                     .DisableTransportSecurityRequirement();
