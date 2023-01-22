@@ -20,29 +20,46 @@ public class SimpleAuthServerMiddleware : IMiddleware
         { ".ico", "image/x-icon" }
     };
 
+    public static List<string> ReplaceUri = new()
+    {
+        "/",
+        "/login",
+        "/role",
+        "/user",
+        "/application",
+        "/setting",
+    };
+
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         await next(context);
 
+
         if (context.Response.StatusCode == 404 || context.Request.Path.Value == "/")
         {
+            // 当路由不是api和 授权接口 时进入
             if ((!context.Request.Path.ToString().StartsWith("/api") &&
-                !context.Request.Path.Value.StartsWith("/connect")) || context.Request.Path.Value == "/")
+                 !context.Request.Path.Value.StartsWith("/connect")) || context.Request.Path.Value == "/")
             {
-                var extType = Path.GetExtension(context.Request.Path);
-                context.Response.StatusCode = 200;
-                if (_contentTypes.TryGetValue(extType, out var contentType))
+                if (ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
                 {
-                    context.Response.ContentType = contentType;
+                    context.Response.ContentType = "text/html; charset=utf-8";
+
+                    await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
+                        AppContext.BaseDirectory, "wwwroot",
+                        "index.html")));
                 }
                 else
                 {
-                    context.Response.ContentType = "text/html; charset=utf-8";
+                    var extType = Path.GetExtension(context.Request.Path);
+                    context.Response.StatusCode = 200;
+                    context.Response.ContentType = _contentTypes.TryGetValue(extType, out var contentType)
+                        ? contentType
+                        : "text/html; charset=utf-8";
+                    await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
+                        AppContext.BaseDirectory, "wwwroot",
+                        "index.html")));
                 }
-
-                var bytes = await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot",
-                    "index.html"));
-                await context.Response.BodyWriter.WriteAsync(bytes);
             }
         }
         else if (context.Response.StatusCode == 302)
@@ -64,7 +81,8 @@ public class SimpleAuthServerMiddleware : IMiddleware
             if (!string.IsNullOrEmpty(location))
             {
                 // 测试环境需要替换url
-                context.Response.Headers["Location"] = location.Replace("https://localhost:44322", "http://localhost:8000");
+                context.Response.Headers["Location"] =
+                    location.Replace("https://localhost:44322", "http://localhost:8000");
             }
 
 #endif
