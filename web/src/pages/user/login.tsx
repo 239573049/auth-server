@@ -29,7 +29,6 @@ export default () => {
   function onSubmit(value: any) {
     var client_id = GetQueryValue('client_id');
     var scope = GetQueryValue('scope');
-    var returnUrl = GetQueryValue('redirect_uri');
     var grant_type = GetQueryValue('grant_type');
     var client_secret = GetQueryValue('grant_type');
 
@@ -43,6 +42,7 @@ export default () => {
         grant_type,
       )
       .then((res) => {
+        var returnUrl = GetQueryValue('redirect_uri');
         if (returnUrl) {
           window.location.href = returnUrl + '?token=' + res.access_token;
         }
