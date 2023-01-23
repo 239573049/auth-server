@@ -40,6 +40,8 @@ public class SimpleAuthServerMiddleware : IMiddleware
             await context.Response.BodyWriter.WriteAsync(await File.ReadAllBytesAsync(Path.Combine(
                 AppContext.BaseDirectory, "wwwroot",
                 "index.html")));
+            
+            return;
         }
         
         if (context.Response.StatusCode == 404 || context.Request.Path.Value == "/")
