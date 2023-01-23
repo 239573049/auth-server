@@ -9,6 +9,11 @@ class AuthServerApi {
     client_id: string | null = 'Simple_App',
     grant_type: string | null = 'password',
   ) {
+
+    if(!grant_type){
+      grant_type = "password"
+    }
+
     return request.post('/connect/token', {
       requestType: 'form',
       data: {

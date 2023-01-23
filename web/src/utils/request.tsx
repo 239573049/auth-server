@@ -6,7 +6,7 @@ var baseUrl;
 
 if (process.env.NODE_ENV === "development") {
 
-    baseUrl = 'http://localhost:44322';
+    baseUrl = 'https://auth.tokengo.top';
 }
 
 const errorHandler = (error: any) => {

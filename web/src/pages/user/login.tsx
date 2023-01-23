@@ -45,6 +45,7 @@ export default () => {
         var returnUrl = GetQueryValue('redirect_uri');
         if (returnUrl) {
           window.location.href = returnUrl + '?token=' + res.access_token;
+          return;
         }
         setToken(res.access_token);
         message.success('登录成功！');
