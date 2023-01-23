@@ -34,7 +34,6 @@ try
     await builder.AddApplicationAsync<SimpleAuthServerModule>();
     var app = builder.Build();
     app.UseMiddleware<SimpleAuthServerMiddleware>();
-
     await app.InitializeApplicationAsync();
     await app.RunAsync();
 

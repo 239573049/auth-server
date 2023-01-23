@@ -31,9 +31,7 @@ public class SimpleAuthServerMiddleware : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        await next(context);
-
-        if (context.Response.StatusCode == 404 && ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
+        if (ReplaceUri.Any(x => context.Request.Path.Value.StartsWith(x)))
         {
             context.Response.ContentType = "text/html; charset=utf-8";
             context.Response.StatusCode = 200;
@@ -43,6 +41,9 @@ public class SimpleAuthServerMiddleware : IMiddleware
             
             return;
         }
+        
+        await next(context);
+
         
         if (context.Response.StatusCode == 404 || context.Request.Path.Value == "/")
         {
