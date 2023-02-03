@@ -13,7 +13,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { Space, message } from 'antd';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties } from 'react';
 import { history } from 'umi';
 import './login.less';
 
@@ -60,7 +60,6 @@ export default () => {
   return (
     <div style={{ backgroundColor: 'white' }} className="plan" key="login">
       <LoginForm
-        logo="https://blog-simple.oss-cn-shenzhen.aliyuncs.com/logo.png"
         title="授权中心管理平台"
         subTitle="简单好用的授权中心管理平台"
         onFinish={async (value: any) => {
@@ -115,8 +114,9 @@ export default () => {
             style={{
               float: 'right',
             }}
+            onClick={()=>history.push('/register')}
           >
-            忘记密码
+            注册账号
           </a>
         </div>
       </LoginForm>

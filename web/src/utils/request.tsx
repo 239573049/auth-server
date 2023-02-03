@@ -2,11 +2,11 @@ import { extend } from 'umi-request';
 import { history } from 'umi';
 import { GetQueryValue } from './locationhelper';
 import { message } from 'antd';
-var baseUrl;
+var baseUrl ='https://auth.tokengo.top';
 
 if (process.env.NODE_ENV === "development") {
 
-    baseUrl = 'https://auth.tokengo.top';
+    baseUrl = 'http://localhost:44322';
 }
 
 const errorHandler = (error: any) => {

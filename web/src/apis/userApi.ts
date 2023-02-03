@@ -54,6 +54,19 @@ class UserApi {
             params:input
         })
     }
+    
+    /**
+     * 创建用户
+     * @param dto 
+     * @returns 
+     */
+    register(dto: UserInfoDto) {
+        dto.avatar = "https://blog-simple.oss-cn-shenzhen.aliyuncs.com/Avatar.jpg";
+        return request.post(prefix+'/register', {
+            data: dto,
+            requestType: 'json'
+        })
+    }
 }
 
 export default new UserApi

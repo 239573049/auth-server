@@ -13,7 +13,6 @@ using Volo.Abp.Identity;
 namespace Simple.Application.Users;
 
 /// <inheritdoc />
-[Authorize]
 public class UserInfoService : ApplicationService, IUserInfoService
 {
     private readonly IUserInfoRepository _userInfoRepository;
@@ -93,5 +92,27 @@ public class UserInfoService : ApplicationService, IUserInfoService
 
         return new PagedResultDto<UserInfoDto>(count, dto);
 
+    }
+
+    /// <inheritdoc />
+    [AllowAnonymous]
+    public async Task RegisterAsync(CreateUserInput dto)
+    {
+        if (await _userInfoRepository.AnyAsync(x => x.UserName == dto.UserName || x.Email == dto.Email))
+        {
+            throw new BusinessException(SimpleDomainErrorCodes.AccountDuplication);
+        }
+
+        var data = new UserInfo(Guid.NewGuid(), dto.UserName, dto.Email);
+        data.SetPassword(_passwordHasher.HashPassword(data, dto.Password));
+        data.SetPhoneNumber(dto.PhoneNumber, true);
+        data.ExtraProperties.Add("Avatar", dto.Avatar);
+
+        // 获取所有默认的角色
+        var roles = await _roleRepository.GetListAsync(x => x.IsDefault);
+
+        // 将默认角色添加到新增用户
+        roles.ForEach(x => data.AddRole(x.Id));
+        await _userInfoRepository.InsertAsync(data, true);
     }
 }

@@ -3,6 +3,10 @@ export const routes: any[] = [
         name: '登录',
         path: '/login',
         component: '@/pages/user/login',
+    },{
+        name: '注册',
+        path: '/register',
+        component: '@/pages/user/register',
     },
     {
         path: '/',

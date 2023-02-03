@@ -13,7 +13,13 @@ class AuthServerApi {
     if(!grant_type){
       grant_type = "password"
     }
-
+    if(!scope){
+      scope='Simple'
+    }
+    if(!client_id){
+      client_id='Simple_App'
+    }
+    
     return request.post('/connect/token', {
       requestType: 'form',
       data: {

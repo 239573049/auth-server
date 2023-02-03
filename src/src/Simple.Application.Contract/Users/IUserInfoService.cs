@@ -40,4 +40,11 @@ public interface IUserInfoService
     /// </summary>
     /// <returns></returns>
     Task<PagedResultDto<UserInfoDto>> GetRoleUserListAsync(GetRoleUserListInput input);
+
+    /// <summary>
+    /// 注册账号
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    Task RegisterAsync(CreateUserInput input);
 }

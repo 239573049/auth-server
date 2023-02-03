@@ -19,6 +19,7 @@ using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
@@ -111,6 +112,11 @@ public class SimpleAuthServerModule : AbpModule
         Configure<AbpBackgroundJobOptions>(options =>
         {
             options.IsJobExecutionEnabled = false;
+        });
+
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.AutoValidateIgnoredHttpMethods.Add("POST");
         });
 
         Configure<AbpDistributedCacheOptions>(options =>
