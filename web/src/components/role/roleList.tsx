@@ -32,13 +32,15 @@ export default class RoleList extends Component<IProps, IState> {
 
   getRoleList() {
     roleApi.all().then((res) => {
-      // 默认选择第一个角色
-      this.props.roleClick(res.items[0]);
-      this.eventRoleClick(res.items[0]);
-      this.setState({
-        data: res.items,
-        selectIndex: 0,
-      });
+      if(res){
+        // 默认选择第一个角色
+        this.props.roleClick(res.items[0]);
+        this.eventRoleClick(res.items[0]);
+        this.setState({
+          data: res.items,
+          selectIndex: 0,
+        });
+      }
     });
   }
 
